@@ -65,6 +65,7 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
 ### Milestones
 - [Milestone 1](./Milestone%201.pdf)
 - [Milestone 2](./Milestone%202.pdf)
+- [Milestone 3 Cover Page](./Milestone%203%20Cover%20Page.pdf)
 
 #### Group Members:
 - Aditya Goel
