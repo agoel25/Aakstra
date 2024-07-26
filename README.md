@@ -11,7 +11,8 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
 
 #### Both
 1) Deciding the basic layout and colour theme (Deadline 25th July)
-2) Error Handling: All the pages should have basic input error handling along with any database errors that arise.
+2) Error Handling: All the pages should have basic input error handling along with any database errors that arise. (Deadline 1st August)
+3) User Notifications: All user actions should have success and failure notifications so user knows if the action went through (Deadline 1st August)
 
 #### Frontend Tasks (Assigned all to Kaz)
 1) **Landing Page**: 2 buttons - Login and Sign Up. *Deadline 26th July*
@@ -53,6 +54,8 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
     a. Add the billing details entered by the user to the database.
 
 10. **SQL Query Check**: Check all queries from Milestone 4 rubric have been included in the project implementation. *Deadline 31st July*
+
+11. **Security**: Ensure that basic security practices are used to prevent security attacks mentioned in Milestone 5 like injection attacks and rainbow attacks. *Deadline 1st August*
 
 ## Challenges
 1.	We are using Java and JavaScript together for the first time, which could lead to integration issues.
