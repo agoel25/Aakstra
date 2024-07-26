@@ -59,14 +59,14 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
 2.	This is our first project with separate frontend and backend teams, potentially causing communication problems or blockers.
 
 ## Frontend Views
-- [Login Page](./Forntend_Views/LoginPage.png)
-- [Sign Up Page](./Forntend_Views/SignUpPage.png)
-- [Sign Up Billing Page](./Forntend_Views/SignUpBillingPage.png)
-- [Project Page Empty](./Forntend_Views/ProjectPageEmpty.png)
-- [Project Page Populated](./Forntend_Views/ProjectPagePopulated.png)
-- [Create Project](./Forntend_Views/CreateProject.png)
-- [Create Instance](./Forntend_Views/CreateInstance.png)
-- [Billing Detail Page](./Forntend_Views/BillingDetailPage.png)
+- [Login Page](./Frontend_Views/LoginPage.png)
+- [Sign Up Page](./Frontend_Views/SignUpPage.png)
+- [Sign Up Billing Page](./Frontend_Views/SignUpBillingPage.png)
+- [Project Page Empty](./Frontend_Views/ProjectPageEmpty.png)
+- [Project Page Populated](./Frontend_Views/ProjectPagePopulated.png)
+- [Create Project](./Frontend_Views/CreateProject.png)
+- [Create Instance](./Frontend_Views/CreateInstance.png)
+- [Billing Detail Page](./Frontend_Views/BillingDetailPage.png)
 
 ### Milestones
 - [Milestone 1](./Milestone%201.pdf)
