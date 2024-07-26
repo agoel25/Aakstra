@@ -52,6 +52,12 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
 9. **Billing Page**: *Deadline 30th July*   
     a. Add the billing details entered by the user to the database.
 
+10. **SQL Query Check**: Check all queries from Milestone 4 rubric have been included in the project implementation. *Deadline 31st July*
+
+## Challenges
+1.	We are using Java and JavaScript together for the first time, which could lead to integration issues.
+2.	This is our first project with separate frontend and backend teams, potentially causing communication problems or blockers.
+
 ## Frontend Views
 - [Login Page](./Forntend_Views/LoginPage.png)
 - [Sign Up Page](./Forntend_Views/SignUpPage.png)
