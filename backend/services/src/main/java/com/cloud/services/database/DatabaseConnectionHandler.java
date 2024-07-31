@@ -4,6 +4,7 @@ package com.cloud.services.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.springframework.stereotype.Component;
@@ -43,6 +44,32 @@ public class DatabaseConnectionHandler {
             connection.rollback();
         } catch (SQLException e) {
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+        }
+    }
+
+    public void setupDatabase() {
+        try {
+            String sqlQuery = "CREATE TABLE Customer (" +
+                    "Email VARCHAR(30) PRIMARY KEY," +
+                    "Name VARCHAR(30) NOT NULL," +
+                    "PhoneNumber VARCHAR(15) NOT NULL UNIQUE," +
+                    "Password VARCHAR(30) NOT NULL," +
+                    "Address VARCHAR(50) NOT NULL" +
+                    ")";
+            executeQuery(sqlQuery);
+            System.out.println("Tables created!");
+        } catch (Exception e){
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+        }
+    }
+
+    public void executeQuery(String query) {
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.execute();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
         }
     }
 }
