@@ -76,7 +76,13 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
 - [Milestone 2](./Milestone%202.pdf)
 - [Milestone 3 Cover Page](./Milestone%203%20Cover%20Page.pdf)
 
-#### Group Members:
+### Group Members:
 - Aditya Goel
 - Ashmit Gupta
 - Kaz Tahara-Edmonds
+
+### Git Config Note:
+We accidentally pushed some changes with our non-ubc accounts, here is a list of all accounts used to commit to this repository:
+- Aditya Goel: agoel25, adityagoel
+- Ashmit Gupta: ashmit03, AshmitGupta
+- Kaz Tahara-Edmonds: kazuote
