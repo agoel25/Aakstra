@@ -2,10 +2,7 @@
 // 2024 Tutorial 2: https://github.students.cs.ubc.ca/CPSC304/CPSC304_Java_Project
 package com.cloud.services.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 import org.springframework.stereotype.Component;
 
@@ -16,8 +13,8 @@ public class DatabaseConnectionHandler {
     private Connection connection = null;
 
     final private String oracleUrl = "jdbc:oracle:thin:@localhost:1522:stu";
-    final private String username = "";
-    final private String password = "";
+    final private String username = "ora_agoel25";
+    final private String password = "a84874379";
 
     public DatabaseConnectionHandler() {
         try {
@@ -48,6 +45,8 @@ public class DatabaseConnectionHandler {
     }
 
     public void setupDatabase() {
+        dropTablesIfExists();
+
         try {
             String sqlQuery = "CREATE TABLE Customer (" +
                     "Email VARCHAR(30) PRIMARY KEY," +
@@ -60,6 +59,23 @@ public class DatabaseConnectionHandler {
             System.out.println("Tables created!");
         } catch (Exception e){
             System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+        }
+    }
+
+    private void dropTablesIfExists() {
+        String query = "select table_name from user_tables";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // refer to this link for documentation of CASCADE CONSTRAINTS:
+                // https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/DROP-TABLE.html
+                String dropQuery = "DROP TABLE " + rs.getString(1) + " CASCADE CONSTRAINTS";
+                executeQuery(dropQuery);
+                System.out.println("Dropped table: " + rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            rollbackConnection();
         }
     }
 
