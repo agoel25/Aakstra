@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cloud.services.model.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -52,9 +53,61 @@ public class DatabaseConnectionHandler {
     public void setupDatabase() {
         dropTablesIfExists();
         createAllTables();
+        insertAllData();
     }
 
-    private void createAllTables() {
+    // Customer methods
+    public void insertCustomer(Customer customer) {
+        String query = "INSERT INTO customer VALUES (?,?,?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, customer.getEmail());
+            ps.setString(2, customer.getName());
+            ps.setString(3, customer.getPhoneNumber());
+            ps.setString(4, customer.getPassword());
+            ps.setString(5, customer.getAddress());
+            // TODO: unique constraint on phone number
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted customer {}", customer.getEmail());
+        } catch (SQLException e) {
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void insertAllData() {
+        Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
+        insertCustomer(john);
+    }
+
+    public void dropTablesIfExists() {
+        String query = "select table_name from user_tables";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // refer to this link for documentation of CASCADE CONSTRAINTS:
+                // https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/DROP-TABLE.html
+                String dropQuery = "DROP TABLE " + rs.getString(1) + " CASCADE CONSTRAINTS";
+                executeQuery(dropQuery);
+                logger.info("Dropped table: {}", rs.getString(1));
+            }
+        } catch (SQLException e) {
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void executeQuery(String query) {
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.execute();
+            connection.commit();
+        } catch (SQLException e) {
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            rollbackConnection();
+        }
+    }
+
+    public void createAllTables() {
         List<String> queryList = new ArrayList<String>();
 
         try {
@@ -264,33 +317,6 @@ public class DatabaseConnectionHandler {
             logger.info("Tables created!");
         } catch (Exception e){
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());
-        }
-    }
-
-    private void dropTablesIfExists() {
-        String query = "select table_name from user_tables";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                // refer to this link for documentation of CASCADE CONSTRAINTS:
-                // https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/DROP-TABLE.html
-                String dropQuery = "DROP TABLE " + rs.getString(1) + " CASCADE CONSTRAINTS";
-                executeQuery(dropQuery);
-                logger.info("Dropped table: {}", rs.getString(1));
-            }
-        } catch (SQLException e) {
-            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
-            rollbackConnection();
-        }
-    }
-
-    public void executeQuery(String query) {
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.execute();
-            connection.commit();
-        } catch (SQLException e) {
-            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
-            rollbackConnection();
         }
     }
 }
