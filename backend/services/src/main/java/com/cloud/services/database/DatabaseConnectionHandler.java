@@ -6,10 +6,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseConnectionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseConnectionHandler.class);
     private static final String EXCEPTION_TAG = "[EXCEPTION]";
 
     private Connection connection = null;
@@ -22,9 +25,9 @@ public class DatabaseConnectionHandler {
         try {
             connection = DriverManager.getConnection(oracleUrl, username, password);
             connection.setAutoCommit(false);
-            System.out.println("Connected to Oracle!");
+            logger.info("Connected to Oracle!");
         } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
         }
     }
 
@@ -34,7 +37,7 @@ public class DatabaseConnectionHandler {
                 connection.close();
             }
         } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
         }
     }
 
@@ -42,12 +45,16 @@ public class DatabaseConnectionHandler {
         try {
             connection.rollback();
         } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
         }
     }
 
     public void setupDatabase() {
         dropTablesIfExists();
+        createAllTables();
+    }
+
+    private void createAllTables() {
         List<String> queryList = new ArrayList<String>();
 
         try {
@@ -254,9 +261,9 @@ public class DatabaseConnectionHandler {
             for (String query : queryList) {
                 executeQuery(query);
             }
-            System.out.println("Tables created!");
+            logger.info("Tables created!");
         } catch (Exception e){
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
         }
     }
 
@@ -269,10 +276,10 @@ public class DatabaseConnectionHandler {
                 // https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/DROP-TABLE.html
                 String dropQuery = "DROP TABLE " + rs.getString(1) + " CASCADE CONSTRAINTS";
                 executeQuery(dropQuery);
-                System.out.println("Dropped table: " + rs.getString(1));
+                logger.info("Dropped table: {}", rs.getString(1));
             }
         } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             rollbackConnection();
         }
     }
@@ -282,7 +289,7 @@ public class DatabaseConnectionHandler {
             ps.execute();
             connection.commit();
         } catch (SQLException e) {
-            System.out.println(EXCEPTION_TAG + " " + e.getMessage());
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             rollbackConnection();
         }
     }
