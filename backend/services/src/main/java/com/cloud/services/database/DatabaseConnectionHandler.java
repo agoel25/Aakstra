@@ -75,7 +75,7 @@ public class DatabaseConnectionHandler {
         return null;
     }
 
-    public void insertProject(Project project, String email) throws SQLException {
+    public void insertProject(Project project, String email, String partnerEmail) throws SQLException {
         String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
             ps.setInt(1, project.getId());
@@ -99,6 +99,23 @@ public class DatabaseConnectionHandler {
             ps.execute();
             connection.commit();
             logger.info("Inserted project {} with customer {}", project.getName(), email);
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+
+        String partnerPartOfQuery = "INSERT INTO PartOf VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(partnerPartOfQuery)) {
+            ps.setString(1, partnerEmail);
+            ps.setInt(2, project.getId());
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted project {} with customer {}", project.getName(), partnerEmail);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLIntegrityConstraintViolationException(e.getMessage());
         } catch (SQLException e) {
             rollbackConnection();
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());

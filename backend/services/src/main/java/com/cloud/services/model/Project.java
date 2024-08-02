@@ -6,13 +6,15 @@ public class Project {
     private String description;
     private String creationDate;
     private String status;
+    private String partnerEmail;
 
-    public Project(Integer id, String name, String description, String creationDate, String status) {
+    public Project(Integer id, String name, String description, String creationDate, String status, String partnerEmail) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
         this.status = status;
+        this.partnerEmail = partnerEmail;
     }
 
     public Integer getId() {
@@ -35,6 +37,10 @@ public class Project {
         return status;
     }
 
+    public String getPartnerEmail() {
+        return partnerEmail;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -53,5 +59,9 @@ public class Project {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setPartnerEmail(String partnerEmail) {
+        this.partnerEmail = partnerEmail;
     }
 }

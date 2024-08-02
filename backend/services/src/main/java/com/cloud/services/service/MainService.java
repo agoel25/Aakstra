@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @Service
 @RestController
@@ -56,12 +57,15 @@ public class MainService {
                                              @RequestParam String name,
                                              @RequestParam String description,
                                              @RequestParam String creationDate,
-                                             @RequestParam String status) {
+                                             @RequestParam String status,
+                                             @RequestParam String partnerEmail) {
         try {
             Integer id = databaseConnectionHandler.getNextProjectID();
-            Project project = new Project(id, name, description, creationDate, status);
-            databaseConnectionHandler.insertProject(project, email);
+            Project project = new Project(id, name, description, creationDate, status, partnerEmail);
+            databaseConnectionHandler.insertProject(project, email, partnerEmail);
             return new ResponseEntity<>("Project inserted successfully", HttpStatus.OK);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return new ResponseEntity<>("User with this email does not exist " + e.getMessage(), HttpStatus.CONFLICT);
         } catch (SQLException e) {
             return new ResponseEntity<>("Project insert failed " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
