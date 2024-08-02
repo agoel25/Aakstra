@@ -189,10 +189,26 @@ public class DatabaseConnectionHandler {
         }
     }
 
+    // Instance Methods
+    public Integer getNextInstanceID() throws SQLException {
+        String query = "SELECT COUNT(*) FROM Instance";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) + 1;
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return null;
+    }
+
     public void addInstance(Instance instance) throws SQLException {
         String addressInfoQuery = "INSERT INTO Instance VALUES (?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(addressInfoQuery)) {
-            ps.setInt(1, Integer.parseInt(instance.getInstanceID()));
+            ps.setInt(1, instance.getInstanceID());
             ps.setString(2, instance.getName());
             ps.setInt(3, Integer.parseInt(instance.getServerID()));
             ps.setInt(4, Integer.parseInt(instance.getProjectID()));
