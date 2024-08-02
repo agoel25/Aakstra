@@ -497,6 +497,66 @@ public class DatabaseConnectionHandler {
             queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
                     "VALUES (105, 'sa-east-1', 'storage.large', 'Inactive', 300, '2024-07-16', '2024-07-16')");
 
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('Serverless', 'PerJob')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('Authentication', 'PerUser')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('GPUCompute', 'PerDay')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('HPC', 'PerDay')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('Database', 'PerQuery')");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('gamma', 'Serverless', 'Handling serverless functions', 'Active', 1)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('authIt', 'Authentication', 'Authentication with large capacity', 'Active', 2)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('GPUb', 'GPUCompute', 'GPU-based rendering service', 'Active', 3)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('RapidX', 'HPC', 'High performance computing service', 'Active', 4)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('cSQL', 'Database', 'Cloud SQL database service', 'Active', 5)");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (1, 'Migrate', 'Migrating app to cloud', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (2, 'Analytics', 'Cloud analytics', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (3, 'OpsPipeline', 'Operations Pipeline', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (4, 'ModelTraining', 'AI models on cloud GPU', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (5, 'Store', 'Cloud storage', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (1, 1)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (2, 2)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (3, 3)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (4, 4)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (5, 5)");
+
             for (String query : queryList) {
                 executeQuery(query);
             }
