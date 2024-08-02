@@ -452,6 +452,51 @@ public class DatabaseConnectionHandler {
                     "FOREIGN KEY (CardNumber) REFERENCES BillingInfo(CardNumber)" +
                     ")");
 
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('us-east-1', 'Virginia', 500, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('us-east-2', 'Oregon', 500, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('eu-central-1', 'Frankfurt', 300, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('eu-west-1', 'Ireland', 300, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('sa-east-1', 'Caracas', 200, 'Active')");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('functional.micro', 1, 8, 'Linux', 1)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('functional.large', 8, 32, 'Linux', 4)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('compute.large', 8, 64, 'Linux', 16)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('compute.xlarge', 16, 128, 'Linux', 32)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('storage.large', 32, 1024, 'Windows', 8)");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (101, 'us-east-1', 'functional.micro', 'Active', 1000, '2024-01-04', '2024-07-15')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (102, 'us-east-2', 'functional.large', 'Active', 800, '2024-01-05', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (103, 'eu-central-1', 'compute.large', 'Active', 600, '2024-02-01', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (104, 'eu-west-1', 'compute.xlarge', 'Active', 1200, '2024-07-11', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (105, 'sa-east-1', 'storage.large', 'Inactive', 300, '2024-07-16', '2024-07-16')");
+
             for (String query : queryList) {
                 executeQuery(query);
             }
