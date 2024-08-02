@@ -104,4 +104,26 @@ public class MainService {
             return new ResponseEntity<>("Failed to add instance: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/addProjectService")
+    public ResponseEntity<String> addProjectService(@RequestParam String projectID,
+                                                    @RequestParam String name) {
+        try {
+            databaseConnectionHandler.insertProjectService(projectID, name);
+            return new ResponseEntity<>("Added service successfully", HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>("Failed to add service: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/addCustomerService")
+    public ResponseEntity<String> addCustomerService(@RequestParam String email,
+                                                     @RequestParam String name) {
+        try {
+            databaseConnectionHandler.insertCustomerService(email, name);
+            return new ResponseEntity<>("Added service successfully", HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>("Failed to add service: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

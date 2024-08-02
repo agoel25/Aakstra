@@ -227,6 +227,36 @@ public class DatabaseConnectionHandler {
         }
     }
 
+    public void insertProjectService(String projectID, String name) throws SQLException {
+        String query = "INSERT INTO ProjectUsesService VALUES (?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, Integer.parseInt(projectID));
+            ps.setString(2, name);
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted service {} for project {}", name, projectID);
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    public void insertCustomerService(String email, String name) throws SQLException {
+        String query = "INSERT INTO CustomerUsesService VALUES (?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setString(2, name);
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted service {} for customer {}", name, email);
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
