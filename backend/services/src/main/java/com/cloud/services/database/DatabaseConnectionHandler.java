@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.cloud.services.model.BillingDetails;
 import com.cloud.services.model.Customer;
+import com.cloud.services.model.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,53 @@ public class DatabaseConnectionHandler {
         dropTablesIfExists();
         createAllTables();
         insertAllData();
+    }
+
+    // Project methods
+    public Integer getNextProjectID() throws SQLException {
+        String query = "SELECT COUNT(*) FROM project";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) + 1;
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return null;
+    }
+
+    public void insertProject(Project project, String email) throws SQLException {
+        String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
+            ps.setInt(1, project.getId());
+            ps.setString(2, project.getName());
+            ps.setString(3, project.getDescription());
+            ps.setDate(4, java.sql.Date.valueOf(project.getCreationDate()));
+            ps.setString(5, project.getStatus());
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted project {}", project.getName());
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+
+        String partOfQuery = "INSERT INTO PartOf VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(partOfQuery)) {
+            ps.setString(1, email);
+            ps.setInt(2, project.getId());
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted project {} with customer {}", project.getName(), email);
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
     }
 
     // Customer methods

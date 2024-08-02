@@ -3,6 +3,7 @@ package com.cloud.services.service;
 import com.cloud.services.database.DatabaseConnectionHandler;
 import com.cloud.services.model.BillingDetails;
 import com.cloud.services.model.Customer;
+import com.cloud.services.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 @Service
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MainService {
 
     @Autowired
@@ -32,7 +34,6 @@ public class MainService {
         } catch (SQLException e) {
             return new ResponseEntity<>("Failed to create customer: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @PostMapping("/login")
@@ -47,7 +48,22 @@ public class MainService {
         } catch (SQLException e) {
             return new ResponseEntity<>("Failed to login: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @PostMapping("/addProject")
+    public ResponseEntity<String> addProject(@RequestParam String email,
+                                             @RequestParam String name,
+                                             @RequestParam String description,
+                                             @RequestParam String creationDate,
+                                             @RequestParam String status) {
+        try {
+            Integer id = databaseConnectionHandler.getNextProjectID();
+            Project project = new Project(id, name, description, creationDate, status);
+            databaseConnectionHandler.insertProject(project, email);
+            return new ResponseEntity<>("Project inserted successfully", HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>("Project insert failed " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/addCard")
