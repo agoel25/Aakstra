@@ -22,6 +22,7 @@ export default function Signup() {
 
   const { signup, addBillingDetails } = useUser();
   const router = useRouter();
+  
 
   const handleNextStep = () => {
     setStep(step + 1);
