@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cloud.services.model.BillingDetails;
 import com.cloud.services.model.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +94,52 @@ public class DatabaseConnectionHandler {
         return false;
     }
 
+    public void addBilling(BillingDetails billingDetails) throws SQLException {
+        String addressInfoQuery = "INSERT INTO AddressInfo VALUES (?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(addressInfoQuery)) {
+            ps.setString(1, billingDetails.getPostalCode());
+            ps.setString(2, billingDetails.getCity());
+            ps.setString(3, billingDetails.getCountry());
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted Address Info {}", billingDetails.getEmail());
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+
+        String billingInfoQuery = "INSERT INTO BillingInfo VALUES (?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(billingInfoQuery)) {
+            ps.setString(1, billingDetails.getCardNumber());
+            ps.setString(2, billingDetails.getPaymentType());
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted Billing Info {}", billingDetails.getEmail());
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+
+        String paymentInfoQuery = "INSERT INTO PaymentInfo VALUES (?,?,?,?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(paymentInfoQuery)) {
+            ps.setString(1, billingDetails.getCardNumber());
+            ps.setString(2, billingDetails.getEmail());
+            ps.setInt(3, Integer.parseInt(billingDetails.getCVV()));
+            ps.setString(4, billingDetails.getPostalCode());
+            ps.setDate(5, java.sql.Date.valueOf(billingDetails.getExpiryDate()));
+            ps.setString(6, billingDetails.getIsDefault());
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted Payment Info {}", billingDetails.getEmail());
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
@@ -165,12 +212,12 @@ public class DatabaseConnectionHandler {
                     ")");
 
             queryList.add("CREATE TABLE BillingInfo (" +
-                    "CardNumber INTEGER PRIMARY KEY," +
+                    "CardNumber CHAR(16) PRIMARY KEY," +
                     "PaymentType VARCHAR(6) NOT NULL" +
                     ")");
 
             queryList.add("CREATE TABLE PaymentInfo (" +
-                    "CardNumber INTEGER," +
+                    "CardNumber CHAR(16)," +
                     "Email VARCHAR(30)," +
                     "CVV INTEGER NOT NULL," +
                     "PostalCode VARCHAR(15) NOT NULL," +
@@ -326,7 +373,7 @@ public class DatabaseConnectionHandler {
             queryList.add("CREATE TABLE Bills (" +
                     "InstanceID INTEGER," +
                     "Email VARCHAR(30)," +
-                    "CardNumber INTEGER," +
+                    "CardNumber CHAR(16)," +
                     "Cost INTEGER," +
                     "PRIMARY KEY (InstanceID, Email, CardNumber)," +
                     "FOREIGN KEY (InstanceID) REFERENCES Instance(InstanceID)," +
