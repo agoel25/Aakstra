@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @Service
 @RestController
 @RequestMapping("/api")
