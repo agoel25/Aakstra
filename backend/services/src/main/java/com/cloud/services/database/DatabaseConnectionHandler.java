@@ -76,6 +76,23 @@ public class DatabaseConnectionHandler {
         }
     }
 
+    public boolean loginCheck(String email, String password) throws SQLException {
+        String query = "SELECT * FROM customer WHERE email = ? AND password = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return false;
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
