@@ -22,10 +22,35 @@ export default function Signup() {
 
   const { signup, addBillingDetails } = useUser();
   const router = useRouter();
-  
 
-  const handleNextStep = () => {
-    setStep(step + 1);
+  const validateUserInfo = () => {
+    if (!userInfo.name || !userInfo.phone || !userInfo.email || !userInfo.address || !userInfo.password) {
+      alert("Please fill in all the fields.");
+      return false;
+    }
+    return true;
+  };
+
+  const validateBillingInfo = () => {
+    if (!billingInfo.creditCard || !billingInfo.expiryDate || !billingInfo.cvv) {
+      alert("Please fill in all the billing details.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleNextStep = async () => {
+    if (step === 1 && validateUserInfo()) {
+      try {
+        await signup(userInfo);
+        setStep(step + 1);
+        alert("User signed up successfully");
+      } catch (error) {
+        alert("Failed to sign up. Please try again.");
+      }
+    } else if (step === 2 && validateBillingInfo()) {
+      handleSubmit();
+    }
   };
 
   const handlePreviousStep = () => {
@@ -42,10 +67,15 @@ export default function Signup() {
     setBillingInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    addBillingDetails(billingInfo);
-    router.push("/dashboard");
+    try {
+      await addBillingDetails(billingInfo);
+      alert("Billing details added successfully");
+      router.push("/dashboard");
+    } catch (error) {
+      alert("Failed to add billing details. Please try again.");
+    }
   };
 
   return (
@@ -59,7 +89,7 @@ export default function Signup() {
             <>
               <h1 className="text-2xl font-bold mb-2">Sign Up</h1>
               <p className="text-gray-600 mb-4">Create an account to access our Cloud Service Provider</p>
-              <form>
+              <form onSubmit={(e) => e.preventDefault()}>
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
                     Name
@@ -133,10 +163,7 @@ export default function Signup() {
                 <div className="flex items-center justify-center">
                   <button
                     type="button"
-                    onClick={() => {
-                      signup(userInfo);
-                      handleNextStep();
-                    }}
+                    onClick={handleNextStep}
                     className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline"
                   >
                     Next

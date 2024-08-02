@@ -6,31 +6,26 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const signup = async (userInfo) => {
-    try {
-      const response = await fetch("http://localhost:8080/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          email: userInfo.email,
-          name: userInfo.name,
-          phoneNumber: userInfo.phone,
-          password: userInfo.password,
-          address: userInfo.address,
-        }),
-      });
+    
+    const response = await fetch("http://localhost:8080/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        email: userInfo.email,
+        name: userInfo.name,
+        phoneNumber: userInfo.phone,
+        password: userInfo.password,
+        address: userInfo.address,
+      }),
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        alert("User Created Successfully");
-        setUser(data);
-      } else {
-        alert("User Creation Failed");
-        console.error("Signup failed");
-      }
-    } catch {
-        alert("User Creation Failed");
+    if (response.ok) {
+      const data = await response.json();
+      setUser(data);
+    } else {
+      throw new Error("Signup failed");
     }
   };
 
