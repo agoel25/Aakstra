@@ -1,7 +1,7 @@
 package com.cloud.services.model;
 
 public class Instance {
-    private String InstanceID;
+    private Integer InstanceID;
     private String Name;
     private String ServerID;
     private String ProjectID;
@@ -11,7 +11,7 @@ public class Instance {
     private String LaunchDate;
     private String StopDate;
 
-    public Instance(String instanceID, String name, String serverID, String projectID, String type, String totalCost, String status, String launchDate, String stopDate) {
+    public Instance(Integer instanceID, String name, String serverID, String projectID, String type, String totalCost, String status, String launchDate, String stopDate) {
         InstanceID = instanceID;
         Name = name;
         ServerID = serverID;
@@ -23,7 +23,7 @@ public class Instance {
         StopDate = stopDate;
     }
 
-    public String getInstanceID() {
+    public Integer getInstanceID() {
         return InstanceID;
     }
 
@@ -59,7 +59,7 @@ public class Instance {
         return StopDate;
     }
 
-    public void setInstanceID(String instanceID) {
+    public void setInstanceID(Integer instanceID) {
         InstanceID = instanceID;
     }
 

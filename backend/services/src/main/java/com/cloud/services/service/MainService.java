@@ -87,8 +87,7 @@ public class MainService {
     }
 
     @PostMapping("/addInstance")
-    public ResponseEntity<String> addInstance(@RequestParam String instanceID,
-                                              @RequestParam String name,
+    public ResponseEntity<String> addInstance(@RequestParam String name,
                                               @RequestParam String serverID,
                                               @RequestParam String projectID,
                                               @RequestParam String type,
@@ -97,7 +96,8 @@ public class MainService {
                                               @RequestParam String launchDate,
                                               @RequestParam String stopDate) {
         try {
-            Instance instance = new Instance(instanceID, name, serverID, projectID, type, totalCost, status, launchDate, stopDate);
+            Integer id = databaseConnectionHandler.getNextInstanceID();
+            Instance instance = new Instance(id, name, serverID, projectID, type, totalCost, status, launchDate, stopDate);
             databaseConnectionHandler.addInstance(instance);
             return new ResponseEntity<>("Added instance successfully", HttpStatus.OK);
         } catch (SQLException e) {
