@@ -11,12 +11,18 @@ export const UserProvider = ({ children }) => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams(userInfo),
+      body: new URLSearchParams({
+        email: userInfo.email,
+        name: userInfo.name,
+        phoneNumber: userInfo.phone,
+        password: userInfo.password,
+        address: userInfo.address
+      }),
     });
 
     if (response.ok) {
       const data = await response.json();
-      setUser(userInfo);
+      setUser(data);
     } else {
       console.error('Signup failed');
     }
