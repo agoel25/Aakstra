@@ -57,7 +57,7 @@ public class DatabaseConnectionHandler {
     }
 
     // Customer methods
-    public void insertCustomer(Customer customer) {
+    public void insertCustomer(Customer customer) throws SQLException {
         String query = "INSERT INTO customer VALUES (?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, customer.getEmail());
@@ -70,14 +70,20 @@ public class DatabaseConnectionHandler {
             connection.commit();
             logger.info("Inserted customer {}", customer.getEmail());
         } catch (SQLException e) {
-            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
         }
     }
 
     public void insertAllData() {
-        Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
-        insertCustomer(john);
+        try {
+            Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
+            insertCustomer(john);
+        } catch (SQLException e) {
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            rollbackConnection();
+        }
     }
 
     public void dropTablesIfExists() {
