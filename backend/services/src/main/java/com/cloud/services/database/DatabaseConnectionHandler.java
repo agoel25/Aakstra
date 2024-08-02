@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.cloud.services.model.BillingDetails;
 import com.cloud.services.model.Customer;
+import com.cloud.services.model.Instance;
 import com.cloud.services.model.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,6 +182,28 @@ public class DatabaseConnectionHandler {
             ps.execute();
             connection.commit();
             logger.info("Inserted Payment Info {}", billingDetails.getEmail());
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    public void addInstance(Instance instance) throws SQLException {
+        String addressInfoQuery = "INSERT INTO Instance VALUES (?,?,?,?,?,?,?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(addressInfoQuery)) {
+            ps.setInt(1, Integer.parseInt(instance.getInstanceID()));
+            ps.setString(2, instance.getName());
+            ps.setInt(3, Integer.parseInt(instance.getServerID()));
+            ps.setInt(4, Integer.parseInt(instance.getProjectID()));
+            ps.setString(5, instance.getType());
+            ps.setString(6, instance.getTotalCost());
+            ps.setString(7, instance.getStatus());
+            ps.setDate(8, java.sql.Date.valueOf(instance.getLaunchDate()));
+            ps.setDate(9, java.sql.Date.valueOf(instance.getStopDate()));
+            ps.execute();
+            connection.commit();
+            logger.info("Inserted Instance Info {}", instance.getInstanceID());
         } catch (SQLException e) {
             rollbackConnection();
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());

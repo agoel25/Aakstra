@@ -3,6 +3,7 @@ package com.cloud.services.service;
 import com.cloud.services.database.DatabaseConnectionHandler;
 import com.cloud.services.model.BillingDetails;
 import com.cloud.services.model.Customer;
+import com.cloud.services.model.Instance;
 import com.cloud.services.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,6 +83,25 @@ public class MainService {
             return new ResponseEntity<>("Added all billing details successfully", HttpStatus.OK);
         } catch (SQLException e) {
             return new ResponseEntity<>("Failed to add billing details: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/addInstance")
+    public ResponseEntity<String> addInstance(@RequestParam String instanceID,
+                                              @RequestParam String name,
+                                              @RequestParam String serverID,
+                                              @RequestParam String projectID,
+                                              @RequestParam String type,
+                                              @RequestParam String totalCost,
+                                              @RequestParam String status,
+                                              @RequestParam String launchDate,
+                                              @RequestParam String stopDate) {
+        try {
+            Instance instance = new Instance(instanceID, name, serverID, projectID, type, totalCost, status, launchDate, stopDate);
+            databaseConnectionHandler.addInstance(instance);
+            return new ResponseEntity<>("Added instance successfully", HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>("Failed to add instance: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
