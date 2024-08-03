@@ -3,7 +3,7 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import CreateInstanceModal from "./CreateInstanceModal";
 import { useUser } from "@/context/UserContext";
 
-const cloudServices = ["EC2", "Lambda", "S3", "RDS", "DynamoDB"];
+const cloudServices = ['gamma', 'authIt', 'GPUb', 'RapidX', 'cSQL'];
 
 const ProjectContent = ({ projectId }) => {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);

@@ -3,7 +3,6 @@ import Modal from './Modal';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { useUser } from "@/context/UserContext";
 
-const cloudServices = ['EC2', 'Lambda', 'S3', 'RDS', 'DynamoDB'];
 
 const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName, handleCreateProject }) => {
   const [description, setDescription] = useState('');
