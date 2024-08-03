@@ -52,6 +52,7 @@ export const UserProvider = ({ children }) => {
       partnerEmail: "john.doe@dummy.com",
     };
     try {
+      console.log(params);
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
     } catch (error) {
       throw new Error(error.response);
@@ -91,9 +92,6 @@ export const UserProvider = ({ children }) => {
       launchDate: instanceInfo.launchDate,
       stopDate: instanceInfo.stopDate,
     };
-
-
-    console.log(params)
 
 
     try {
