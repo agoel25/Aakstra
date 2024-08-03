@@ -34,39 +34,6 @@ export const UserProvider = ({ children }) => {
     console.log(services);
   }, [services]);
 
-  const mockFetchWithParams = async (url, params, method = "POST") => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (url.includes("addProject")) {
-          const projectData = { id: generateRandomId(), ...params };
-          console.log("Project Created Successfully");
-          setProjects([...projects, projectData]);
-          resolve(projectData);
-        } else if (url.includes("addCard")) {
-          const billingData = { id: generateRandomId(), ...params };
-          setBillingDetails([...billingDetails, billingData]);
-          resolve(billingData);
-        } else if (url.includes("addInstance")) {
-          const instanceData = { id: generateRandomId(), ...params };
-          setInstances([...instances, instanceData]);
-          resolve(instanceData);
-        } else if (url.includes("addService")) {
-          const serviceData = { id: generateRandomId(), projectID: params.projectID, name: params.name };
-          setServices(prevServices => [...prevServices, serviceData]);
-          resolve(serviceData);
-        } else if (url.includes("getServicesByProjectID")) {
-          const servicesByProjectID = services.filter(service => service.projectID === params.projectID);
-          resolve(servicesByProjectID);
-        } else if (url.includes("getInstancesByServiceID")) {
-          const instancesByServiceID = instances.filter(instance => instance.serviceID === params.serviceID);
-          resolve(instancesByServiceID);
-        } else {
-          resolve(`Mock response from ${url}`);
-        }
-      }, 100);
-    });
-  };
-
   const signup = async (userInfo) => {
     const params = {
       email: userInfo.email,
@@ -182,12 +149,22 @@ export const UserProvider = ({ children }) => {
 
   const getServicesByProjectID = async (projectID) => {
     const params = { projectID };
-    return await mockFetchWithParams("http://localhost:8080/api/getServicesByProjectID", params, "GET");
+    try {
+      const response = await axios.get("http://localhost:8080/api/getServices", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const getInstancesByServiceID = async (serviceID) => {
     const params = { serviceID };
-    return await mockFetchWithParams("http://localhost:8080/api/getInstancesByServiceID", params, "GET");
+    try {
+      const response = await axios.get("http://localhost:8080/api/getInstances", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   return (
