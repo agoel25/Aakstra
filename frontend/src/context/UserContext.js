@@ -102,7 +102,7 @@ export const UserProvider = ({ children }) => {
       email: projectInfo.email,
       name: projectInfo.name,
       description: projectInfo.description,
-      creationDate: new Date().toISOString(),
+      creationDate: "2011-02-27",
       status: "active",
       partnerEmail: "",
     };
