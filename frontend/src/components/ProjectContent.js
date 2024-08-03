@@ -8,7 +8,6 @@ const cloudServices = ['gamma', 'authIt', 'GPUb', 'RapidX', 'cSQL'];
 const ProjectContent = ({ projectId }) => {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const [collapsedServices, setCollapsedServices] = useState({});
   const [newService, setNewService] = useState("");
   const [projectServices, setProjectServices] = useState([]);
   const [projectInstances, setProjectInstances] = useState([]);
@@ -54,10 +53,6 @@ const ProjectContent = ({ projectId }) => {
   
     try {
       await addInstance({ ...newInstance });
-      setCollapsedServices((prevCollapsedServices) => ({
-        ...prevCollapsedServices,
-        [selectedService.id]: false,
-      }));
   
       const updatedInstances = await getInstancesByServiceID(projectId, selectedService.name);
       setProjectInstances(updatedInstances);
@@ -95,12 +90,6 @@ const ProjectContent = ({ projectId }) => {
     }
   };
 
-  const toggleCollapse = (serviceId) => {
-    setCollapsedServices((prevCollapsedServices) => ({
-      ...prevCollapsedServices,
-      [serviceId]: !prevCollapsedServices[serviceId],
-    }));
-  };
 
   if (!project) {
     return <p>Loading...</p>;
@@ -138,12 +127,6 @@ const ProjectContent = ({ projectId }) => {
                       Add Instance
                     </button>
                     <button
-                      className="ml-2 text-gray-700 focus:outline-none"
-                      onClick={() => toggleCollapse(service.id)}
-                    >
-                      {collapsedServices[service.id] ? "▼" : "▲"}
-                    </button>
-                    <button
                       className="ml-2 text-red-600 hover:text-red-800 focus:outline-none"
                       onClick={() => handleDeleteService(service.id)}
                     >
@@ -151,7 +134,7 @@ const ProjectContent = ({ projectId }) => {
                     </button>
                   </div>
                 </div>
-                {!collapsedServices[service.id] &&
+                {true &&
                   projectInstances.filter((i) => i.serviceID === service.id).length > 0 && (
                     <table className="min-w-full bg-white border border-gray-300 rounded-lg">
                       <thead>
