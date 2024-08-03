@@ -57,8 +57,6 @@ export const UserProvider = ({ children }) => {
     };
     try {
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
-      const newProject = { ...params, id: response.data.id };
-      setProjects([...projects, newProject]);
       return newProject;
     } catch (error) {
       throw new Error(error.response.data);

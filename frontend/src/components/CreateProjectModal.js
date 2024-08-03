@@ -53,7 +53,7 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
         await addService({ projectID: newProject.id, name: service });
       }
 
-      handleCreateProject(newProject);
+      handleCreateProject();
       setNewProjectName('');
       setDescription('');
       setSecurityConfiguration(null);

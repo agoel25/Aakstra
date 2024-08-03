@@ -37,7 +37,7 @@ export default function Dashboard() {
     fetchProjects();
   }, [user, getProjectsByEmail]);
 
-  const handleCreateProject = async (projectData) => {
+  const handleCreateProject = async () => {
     try {
       setIsCreating(false);
       if (user && user.email) {
