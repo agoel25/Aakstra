@@ -21,7 +21,7 @@ const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject }
     <div className="mb-8">
       <h2 className="text-2xl font-bold mb-2 text-gray-700">Projects</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {projects.map((project) => (
+        {projects && projects.map((project) => (
           <div key={project.id} className="relative border border-gray-300 p-4 h-48 rounded-lg bg-white shadow-md">
             <h3 className="text-xl font-bold mb-2">{project.name}</h3>
             <p className="text-gray-700">{project.description}</p>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
-import { useUser } from "@/context/UserContext";
+import { useUser } from "@/context/UserContext_actual";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,7 +9,7 @@ export default function Signup() {
   const [step, setStep] = useState(1);
   const [userInfo, setUserInfo] = useState({
     name: "",
-    phone: "",
+    phoneNumber: "",
     email: "",
     address: "",
     password: ""
@@ -24,7 +24,7 @@ export default function Signup() {
   const router = useRouter();
 
   const validateUserInfo = () => {
-    if (!userInfo.name || !userInfo.phone || !userInfo.email || !userInfo.address || !userInfo.password) {
+    if (!userInfo.name || !userInfo.phoneNumber || !userInfo.email || !userInfo.address || !userInfo.password) {
       alert("Please fill in all the fields.");
       return false;
     }
@@ -105,14 +105,14 @@ export default function Signup() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="phone" className="block text-gray-700 text-sm font-bold mb-2">
+                  <label htmlFor="phoneNumber" className="block text-gray-700 text-sm font-bold mb-2">
                     Phone Number
                   </label>
                   <input
                     type="tel"
-                    id="phone"
-                    name="phone"
-                    value={userInfo.phone}
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={userInfo.phoneNumber}
                     onChange={handleChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Enter your phone number"

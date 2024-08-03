@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { useUser } from "@/context/UserContext";
 
-const awsServices = ['EC2', 'Lambda', 'S3', 'RDS', 'DynamoDB'];
+const cloudServices = ['EC2', 'Lambda', 'S3', 'RDS', 'DynamoDB'];
 
 const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName, handleCreateProject }) => {
   const [description, setDescription] = useState('');
@@ -10,6 +11,8 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
   const [securityConfigType, setSecurityConfigType] = useState('');
   const [securityConfigName, setSecurityConfigName] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
+
+  const { user, addProject, addService } = useUser();
 
   const handleAddSecurityConfig = () => {
     if (securityConfigType && securityConfigName) {
@@ -29,17 +32,37 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
     setSelectedServices(selectedServices.filter(s => s !== service));
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    if (!user || !user.email) {
+      console.error("User not logged in");
+      return;
+    }
+
     const projectData = {
+      email: user.email,
       name: newProjectName,
       description,
       securityConfiguration,
-      services: selectedServices,
     };
-    handleCreateProject(projectData);
-    setDescription('');
-    setSecurityConfiguration(null);
-    setSelectedServices([]);
+
+    try {
+      const newProject = await addProject(projectData);
+
+      console.log(newProject);
+
+      for (const service of selectedServices) {
+        await addService({ projectID: newProject.id, name: service });
+      }
+
+      handleCreateProject(newProject);
+      setNewProjectName('');
+      setDescription('');
+      setSecurityConfiguration(null);
+      setSelectedServices([]);
+      onClose();
+    } catch (error) {
+      console.error("Failed to create project:", error);
+    }
   };
 
   return (
@@ -100,9 +123,13 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
             className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
           >
             <option value="">Select Service</option>
-            {awsServices.map((service) => (
-              <option key={service} value={service}>{service}</option>
-            ))}
+            {cloudServices
+              .filter((service) => !selectedServices.includes(service))
+              .map((service) => (
+                <option key={service} value={service}>
+                  {service}
+                </option>
+              ))}
           </select>
         </div>
         <ul className="list-disc list-inside">

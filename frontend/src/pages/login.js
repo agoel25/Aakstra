@@ -1,8 +1,26 @@
+import { useState } from "react";
 import { Inter } from "next/font/google";
-
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/router";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useUser();
+  const router = useRouter();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await login(email, password);
+      alert("Login successful");
+      router.push("/dashboard");
+    } catch (error) {
+      alert("Login failed");
+    }
+  };
+
   return (
     <main className="flex min-h-screen">
       <div className="w-1/2 bg-indigo-900 flex items-start justify-start p-8">
@@ -12,19 +30,21 @@ export default function Home() {
         <div className="border border-gray-300 p-8 rounded-lg bg-white shadow-md w-full max-w-md">
           <h1 className="text-2xl font-bold mb-2">Login</h1>
           <p className="text-gray-600 mb-4">Enter your credentials to access our Cloud Service Provider</p>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
-                htmlFor="username"
+                htmlFor="email"
                 className="block text-gray-700 text-sm font-bold mb-2"
               >
-                Username
+                Email
               </label>
               <input
-                type="text"
-                id="username"
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter your username"
+                placeholder="Enter your email"
               />
             </div>
             <div className="mb-6">
@@ -37,6 +57,8 @@ export default function Home() {
               <input
                 type="password"
                 id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your password"
               />

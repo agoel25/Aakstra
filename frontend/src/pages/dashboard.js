@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import CreateProjectModal from "../components/CreateProjectModal";
 import AddBillingModal from "../components/AddBillingModal";
@@ -7,46 +7,74 @@ import HomeContent from "../components/HomeContent";
 import BillingContent from "../components/BillingContent";
 import ProjectContent from "../components/ProjectContent";
 import { HomeIcon, CreditCardIcon } from '@heroicons/react/24/solid';
+import { useUser } from "@/context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Dashboard() {
-  const defaultProject = {
-    id: 1,
-    name: "Kaz",
-    description: "Your Customer Services",
-  };
-
-  const [projects, setProjects] = useState([]);
   const [newProjectName, setNewProjectName] = useState("");
+  const [projects, setProjects] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
   const [currentView, setCurrentView] = useState('home');
-  const [billingDetails, setBillingDetails] = useState([]);
   const [isAddingBilling, setIsAddingBilling] = useState(false);
   const [newBillingDetail, setNewBillingDetail] = useState({ number: "", cvv: "", expiry: "" });
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
-  const handleCreateProject = (projectData) => {
-    const newProject = {
-      id: projects.length + 2,
-      ...projectData,
+  const { user, billingDetails, addProject, addCard, getProjectsByEmail } = useUser();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (user && user.email) {
+        try {
+          const userProjects = await getProjectsByEmail(user.email);
+          setProjects(userProjects);
+        } catch (error) {
+          console.error("Failed to fetch projects:", error);
+        }
+      }
     };
-    setProjects([...projects, newProject]);
-    setIsCreating(false);
-    setSelectedProject(newProject);
-    setCurrentView('project');
+
+    fetchProjects();
+  }, [user, getProjectsByEmail]);
+
+  const handleCreateProject = async (projectData) => {
+    try {
+      setIsCreating(false);
+      if (user && user.email) {
+        const userProjects = await getProjectsByEmail(user.email);
+        setProjects(userProjects);
+      }
+    } catch (error) {
+      console.error("Failed to create project:", error);
+    }
   };
 
-  const handleAddBillingDetail = () => {
-    setBillingDetails([...billingDetails, newBillingDetail]);
-    setNewBillingDetail({ number: "", cvv: "", expiry: "" });
-    setIsAddingBilling(false);
+  const handleAddBillingDetail = async () => {
+    try {
+      const newBilling = await addCard(newBillingDetail);
+      setNewBillingDetail({ number: "", cvv: "", expiry: "" });
+      setIsAddingBilling(false);
+    } catch (error) {
+      console.error("Failed to add billing detail:", error);
+    }
   };
 
   const handleViewProject = (project) => {
-    setSelectedProject(project);
+    setSelectedProjectId(project.id);
     setCurrentView('project');
   };
+
+  const defaultProject = user
+    ? {
+        id: 1,
+        name: user.name,
+        description: user.email,
+      }
+    : {
+        id: 1,
+        name: "Default Project",
+        description: "No user logged in",
+      };
 
   return (
     <div className="flex min-h-screen">
@@ -73,7 +101,7 @@ export default function Dashboard() {
       </aside>
       <main className={`flex-1 flex flex-col p-8 bg-gray-100 ${inter.className}`}>
         <h1 className="text-md text-gray-700 font-bold mb-8">
-          Dashboard {'>'} {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
+          {user?.email} {'>'} {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
         </h1>
         {currentView === 'home' && (
           <HomeContent
@@ -89,8 +117,8 @@ export default function Dashboard() {
             onAddBillingClick={() => setIsAddingBilling(true)} 
           />
         )}
-        {currentView === 'project' && (
-          <ProjectContent project={selectedProject} />
+        {currentView === 'project' && selectedProjectId && (
+          <ProjectContent projectId={selectedProjectId} />
         )}
         <CreateProjectModal
           isOpen={isCreating}

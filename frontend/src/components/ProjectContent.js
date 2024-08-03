@@ -1,65 +1,99 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import CreateInstanceModal from "./CreateInstanceModal";
-const awsServices = ["EC2", "Lambda", "S3", "RDS", "DynamoDB"];
+import { useUser } from "@/context/UserContext";
 
-const getRandomId = () => Math.floor(Math.random() * 100000);
+const cloudServices = ["EC2", "Lambda", "S3", "RDS", "DynamoDB"];
 
-const ProjectContent = ({ project }) => {
+const ProjectContent = ({ projectId }) => {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const [instances, setInstances] = useState({});
   const [collapsedServices, setCollapsedServices] = useState({});
   const [newService, setNewService] = useState("");
+  const [projectServices, setProjectServices] = useState([]);
+  const [projectInstances, setProjectInstances] = useState([]);
 
+  const { projects, addInstance, addService, getServicesByProjectID, getInstancesByServiceID } = useUser();
 
-  const handleCreateInstance = (instance) => {
+  const project = projects.find((p) => p.id === projectId);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const services = await getServicesByProjectID(projectId);
+        setProjectServices(services);
+
+        const instances = await Promise.all(
+          services.map(async (service) => {
+            const serviceInstances = await getInstancesByServiceID(service.id);
+            return serviceInstances;
+          })
+        );
+
+        setProjectInstances(instances.flat());
+      } catch (error) {
+        console.error("Failed to fetch services or instances:", error);
+      }
+    };
+
+    fetchData();
+  }, [projectId, getServicesByProjectID, getInstancesByServiceID]);
+
+  const handleCreateInstance = async (instance) => {
     const newInstance = {
       ...instance,
-      id: getRandomId(),
       launchDate: new Date().toLocaleString(),
       status: "Running",
     };
-
-    setInstances({
-      ...instances,
-      [selectedService]: [...(instances[selectedService] || []), newInstance],
-    });
-
-    setCollapsedServices({
-      ...collapsedServices,
-      [selectedService]: false, // Automatically expand the section when a new instance is added
-    });
+  
+    try {
+      await addInstance({ ...newInstance, serviceID: selectedService.id });
+      setCollapsedServices((prevCollapsedServices) => ({
+        ...prevCollapsedServices,
+        [selectedService.id]: false,
+      }));
+  
+      const updatedInstances = await getInstancesByServiceID(selectedService.id);
+      setProjectInstances(updatedInstances);
+    } catch (error) {
+      console.error("Failed to create instance:", error);
+    }
   };
+  
 
-  const handleDeleteInstance = (service, index) => {
-    setInstances({
-      ...instances,
-      [service]: instances[service].filter((_, i) => i !== index),
-    });
-  };
+  const handleDeleteInstance = async (serviceId, index) => {
+    try {
 
-  const handleAddService = (service) => {
-    if (service && !project.services.includes(service)) {
-      project.services.push(service);
-      setNewService("");
+    } catch (error) {
+      console.error("Failed to delete instance:", error);
     }
   };
 
-  const handleDeleteService = (service) => {
-    const updatedServices = project.services.filter((s) => s !== service);
-    const updatedInstances = { ...instances };
-    delete updatedInstances[service];
-
-    project.services = updatedServices;
-    setInstances(updatedInstances);
+  const handleAddService = async (service) => {
+    if (service && !projectServices.find((s) => s.name === service)) {
+      try {
+        await addService({ projectID: projectId, name: service });
+        const updatedServices = await getServicesByProjectID(projectId);
+        setProjectServices(updatedServices);
+        setNewService("");
+      } catch (error) {
+        console.error("Failed to add service:", error);
+      }
+    }
   };
 
-  const toggleCollapse = (service) => {
-    setCollapsedServices({
-      ...collapsedServices,
-      [service]: !collapsedServices[service],
-    });
+  const handleDeleteService = async (serviceId) => {
+    try {
+    } catch (error) {
+      console.error("Failed to delete service:", error);
+    }
+  };
+
+  const toggleCollapse = (serviceId) => {
+    setCollapsedServices((prevCollapsedServices) => ({
+      ...prevCollapsedServices,
+      [serviceId]: !prevCollapsedServices[serviceId],
+    }));
   };
 
   if (!project) {
@@ -73,20 +107,20 @@ const ProjectContent = ({ project }) => {
       {project.securityConfiguration && (
         <div className="mt-4">
           <h2 className="text-xl font-bold">Security Configuration</h2>
-          <p className="text-gray-700">{`${project.securityConfiguration.type}: ${project.securityConfiguration.name}`}</p>
+          <p className="text-gray-700">{`${project.securityConfiguration}: ${project.securityConfiguration}`}</p>
         </div>
       )}
-      {project.services && (
+      {projectServices.length > 0 && (
         <div className="mt-4">
           <h2 className="text-xl font-bold mb-2">Services</h2>
           <ul className="list-inside">
-            {project.services.map((service, index) => (
+            {projectServices.map((service, index) => (
               <li
                 key={index}
                 className="text-gray-700 mb-4 bg-white p-4 border-gray-300 border rounded-lg"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-lg font-semibold">{service}</span>
+                  <span className="text-lg font-semibold">{service.name}</span>
                   <div>
                     <button
                       className="ml-2 bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -99,21 +133,20 @@ const ProjectContent = ({ project }) => {
                     </button>
                     <button
                       className="ml-2 text-gray-700 focus:outline-none"
-                      onClick={() => toggleCollapse(service)}
+                      onClick={() => toggleCollapse(service.id)}
                     >
-                      {collapsedServices[service] ? "▼" : "▲"}
+                      {collapsedServices[service.id] ? "▼" : "▲"}
                     </button>
                     <button
                       className="ml-2 text-red-600 hover:text-red-800 focus:outline-none"
-                      onClick={() => handleDeleteService(service)}
+                      onClick={() => handleDeleteService(service.id)}
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>
                   </div>
                 </div>
-                {!collapsedServices[service] &&
-                  instances[service] &&
-                  instances[service].length > 0 && (
+                {!collapsedServices[service.id] &&
+                  projectInstances.filter((i) => i.serviceID === service.id).length > 0 && (
                     <table className="min-w-full bg-white border border-gray-300 rounded-lg">
                       <thead>
                         <tr>
@@ -126,62 +159,56 @@ const ProjectContent = ({ project }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {instances[service].map((instance, i) => (
-                          <tr key={i}>
-                            <td className="py-2 px-4 border-b">
-                              {instance.id}
-                            </td>
-                            <td className="py-2 px-4 border-b">{`${
-                              instance.type.charAt(0).toUpperCase() +
-                              instance.type.slice(1)
-                            }`}</td>
-                            <td className="py-2 px-4 border-b">
-                              {instance.cost}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {instance.launchDate}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {instance.status}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              <button
-                                className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                onClick={() => handleDeleteInstance(service, i)}
-                              >
-                                Delete Instance
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
+                        {projectInstances
+                          .filter((i) => i.serviceID === service.id)
+                          .map((instance, i) => (
+                            <tr key={i}>
+                              <td className="py-2 px-4 border-b">{instance.id}</td>
+                              <td className="py-2 px-4 border-b">{instance.type}</td>
+                              <td className="py-2 px-4 border-b">{instance.totalCost}</td>
+                              <td className="py-2 px-4 border-b">{instance.launchDate}</td>
+                              <td className="py-2 px-4 border-b">{instance.status}</td>
+                              <td className="py-2 px-4 border-b">
+                                <button
+                                  className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                  onClick={() => handleDeleteInstance(service.id, i)}
+                                >
+                                  Delete Instance
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
                   )}
               </li>
             ))}
           </ul>
-          <div className="mb-4 flex items-center mt-4">
-            <select
-              onChange={(e) => setNewService(e.target.value)}
-              value={newService}
-              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
-            >
-              <option value="">Select Service</option>
-              {awsServices.map((service) => (
-                <option key={service} value={service}>
-                  {service}
-                </option>
-              ))}
-            </select>
-            <button
-              className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={() => handleAddService(newService)}
-            >
-              Add Service
-            </button>
-          </div>
         </div>
       )}
+      <div className="mb-4 flex items-center mt-4">
+        <select
+          onChange={(e) => setNewService(e.target.value)}
+          value={newService}
+          className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
+        >
+          <option value="">Select Service</option>
+          {cloudServices
+            .filter((service) => !projectServices.find((s) => s.name === service))
+            .map((service) => (
+              <option key={service} value={service}>
+                {service}
+              </option>
+            ))}
+        </select>
+        <button
+          className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={() => handleAddService(newService)}
+          disabled={projectServices.find((s) => s.name === newService) || newService === ""}
+        >
+          Add Service
+        </button>
+      </div>
       <CreateInstanceModal
         isOpen={isCreatingInstance}
         onClose={() => setIsCreatingInstance(false)}
