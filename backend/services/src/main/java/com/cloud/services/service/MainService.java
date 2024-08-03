@@ -171,4 +171,24 @@ public class MainService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/getCustomerDetails")
+    public ResponseEntity<List<Customer>> getCustomerDetails(@RequestParam String email) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.getCustomerDetails(email), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/deleteProject")
+    public ResponseEntity<String> deleteProject(@RequestParam String projectID) {
+        try {
+            databaseConnectionHandler.deleteProject(projectID);
+            return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>("Failed to deleted project: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

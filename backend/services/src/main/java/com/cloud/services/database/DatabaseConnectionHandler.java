@@ -141,6 +141,23 @@ public class DatabaseConnectionHandler {
         return allProjects;
     }
 
+    public void deleteProject(String projectID) throws SQLException {
+        String projectQuery = "DELETE FROM project WHERE ProjectID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
+            ps.setInt(1, Integer.parseInt(projectID));
+            int numDeletedRows = ps.executeUpdate();
+            if (numDeletedRows <= 0) {
+                throw new SQLException();
+            }
+            connection.commit();
+            logger.info("Deleted project {}", projectID);
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
     public List<ServiceDetails> getAllServices(String projectID) throws SQLException {
         String query = "SELECT ServiceDetails.Name, ServiceDetails.Description, ServiceDetails.Status, ServiceDetails.CostPerUnit, ServiceType.Type, ServiceType.CostType " +
                 "FROM ProjectUsesService, ServiceDetails, ServiceType " +
@@ -179,6 +196,24 @@ public class DatabaseConnectionHandler {
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             throw new SQLException(e.getMessage());
         }
+    }
+
+    public List<Customer> getCustomerDetails(String email) throws SQLException {
+        String query = "SELECT * FROM Customer WHERE Email = ?";
+
+        List<Customer> allCustomers = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Customer customer = new Customer(rs.getString("email"), rs.getString("name"), rs.getString("phoneNumber"), rs.getString("password"), rs.getString("address"));
+                allCustomers.add(customer);
+            }
+            logger.info("Got all Customer Information {}", email);
+        }
+        return allCustomers;
     }
 
     public boolean loginCheck(String email, String password) throws SQLException {
