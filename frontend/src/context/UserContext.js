@@ -57,9 +57,8 @@ export const UserProvider = ({ children }) => {
     };
     try {
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
-      return newProject;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
