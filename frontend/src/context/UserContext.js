@@ -1,10 +1,11 @@
 import { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios";
 
 const UserContext = createContext();
 
 const initialProjects = [
   { id: 1, email: "test@example.com", name: "Project A", description: "Description A", securityConfiguration: "Config A" },
-  { id: 2, email: "test2@example.com", name: "Project B", description: "Description B", securityConfiguration: "Config B" },
+  { id: 2, email: "test2@example.com", name: "Project B", description: "Description B" },
 ];
 
 const initialServices = [
@@ -19,7 +20,6 @@ const initialInstances = [
   { id: 3, serviceID: 3, name: "Instance 3", type: "t2.medium", totalCost: 30, status: "Running", launchDate: "2023-03-01", stopDate: "" },
 ];
 
-
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState(initialProjects);
@@ -30,8 +30,8 @@ export const UserProvider = ({ children }) => {
   const generateRandomId = () => Math.floor(Math.random() * 10000) + 1;
 
   useEffect(() => {
-    console.log(projects)
-    console.log(services)
+    console.log(projects);
+    console.log(services);
   }, [services]);
 
   const mockFetchWithParams = async (url, params, method = "POST") => {
@@ -51,7 +51,7 @@ export const UserProvider = ({ children }) => {
           }
         } else if (url.includes("addProject")) {
           const projectData = { id: generateRandomId(), ...params };
-          console.log("Project Created Successfully")
+          console.log("Project Created Successfully");
           setProjects([...projects, projectData]);
           resolve(projectData);
         } else if (url.includes("addCard")) {
@@ -103,9 +103,18 @@ export const UserProvider = ({ children }) => {
       email: projectInfo.email,
       name: projectInfo.name,
       description: projectInfo.description,
-      securityConfiguration: projectInfo.securityConfiguration,
+      creationDate: new Date().toISOString(),
+      status: "active",
+      partnerEmail: "",
     };
-    return await mockFetchWithParams("http://localhost:8080/api/addProject", params);
+    try {
+      const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
+      const newProject = { ...params, id: response.data.id };
+      setProjects([...projects, newProject]);
+      return newProject;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const addCard = async (billingInfo) => {
@@ -120,38 +129,66 @@ export const UserProvider = ({ children }) => {
       paymentType: billingInfo.paymentType,
       isDefault: billingInfo.isDefault,
     };
-    return await mockFetchWithParams("http://localhost:8080/api/addCard", params);
+    try {
+      const response = await axios.post("http://localhost:8080/api/addCard", null, { params });
+      const newBilling = { ...params, id: response.data.id };
+      setBillingDetails([...billingDetails, newBilling]);
+      return newBilling;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const addInstance = async (instanceInfo) => {
     const params = {
       name: instanceInfo.name,
       serverID: instanceInfo.serverID,
-      serviceID: instanceInfo.serviceID,
+      projectID: instanceInfo.projectID,
       type: instanceInfo.type,
       totalCost: instanceInfo.totalCost,
       status: instanceInfo.status,
       launchDate: instanceInfo.launchDate,
       stopDate: instanceInfo.stopDate,
     };
-    return await mockFetchWithParams("http://localhost:8080/api/addInstance", params);
+    try {
+      const response = await axios.post("http://localhost:8080/api/addInstance", null, { params });
+      const newInstance = { ...params, id: response.data.id };
+      setInstances([...instances, newInstance]);
+      return newInstance;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const addService = async (serviceInfo) => {
     const params = { projectID: serviceInfo.projectID, name: serviceInfo.name };
-    return await mockFetchWithParams("http://localhost:8080/api/addService", params);
+    try {
+      const response = await axios.post("http://localhost:8080/api/addProjectService", null, { params });
+      const newService = { ...params, id: response.data.id };
+      setServices([...services, newService]);
+      return newService;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const getProjectsByEmail = async (email) => {
-    return await mockFetchWithParams("http://localhost:8080/api/getProjectsByEmail", { email }, "GET");
+    try {
+      const response = await axios.get("http://localhost:8080/api/getProjects", { params: { email } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const getServicesByProjectID = async (projectID) => {
-    return await mockFetchWithParams("http://localhost:8080/api/getServicesByProjectID", { projectID }, "GET");
+    const params = { projectID };
+    return await mockFetchWithParams("http://localhost:8080/api/getServicesByProjectID", params, "GET");
   };
 
   const getInstancesByServiceID = async (serviceID) => {
-    return await mockFetchWithParams("http://localhost:8080/api/getInstancesByServiceID", { serviceID }, "GET");
+    const params = { serviceID };
+    return await mockFetchWithParams("http://localhost:8080/api/getInstancesByServiceID", params, "GET");
   };
 
   return (
