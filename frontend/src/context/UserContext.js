@@ -3,23 +3,6 @@ import axios from "axios";
 
 const UserContext = createContext();
 
-const initialProjects = [
-  { id: 1, email: "test@example.com", name: "Project A", description: "Description A", securityConfiguration: "Config A" },
-  { id: 2, email: "test2@example.com", name: "Project B", description: "Description B" },
-];
-
-const initialServices = [
-  { id: 1, projectID: 1, name: "EC2" },
-  { id: 2, projectID: 1, name: "Lambda" },
-  { id: 3, projectID: 2, name: "S3" },
-];
-
-const initialInstances = [
-  { id: 1, serviceID: 1, name: "Instance 1", type: "t2.micro", totalCost: 10, status: "Running", launchDate: "2023-01-01", stopDate: "" },
-  { id: 2, serviceID: 2, name: "Instance 2", type: "t2.large", totalCost: 20, status: "Stopped", launchDate: "2023-02-01", stopDate: "2023-02-10" },
-  { id: 3, serviceID: 3, name: "Instance 3", type: "t2.medium", totalCost: 30, status: "Running", launchDate: "2023-03-01", stopDate: "" },
-];
-
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState(initialProjects);
@@ -27,7 +10,6 @@ export const UserProvider = ({ children }) => {
   const [instances, setInstances] = useState(initialInstances);
   const [billingDetails, setBillingDetails] = useState([]);
 
-  const generateRandomId = () => Math.floor(Math.random() * 10000) + 1;
 
   useEffect(() => {
     console.log(projects);
