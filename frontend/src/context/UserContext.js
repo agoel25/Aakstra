@@ -104,7 +104,7 @@ export const UserProvider = ({ children }) => {
       description: projectInfo.description,
       creationDate: "2011-02-27",
       status: "active",
-      partnerEmail: projectInfo.email,
+      partnerEmail: "john.doe@dummy.com",
     };
     try {
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
