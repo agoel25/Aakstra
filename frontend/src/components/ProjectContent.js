@@ -25,7 +25,7 @@ const ProjectContent = ({ projectId }) => {
 
         const instances = await Promise.all(
           services.map(async (service) => {
-            const serviceInstances = await getInstancesByServiceID(service.id);
+            const serviceInstances = await getInstancesByServiceID(projectId, service.name);
             return serviceInstances;
           })
         );
@@ -53,7 +53,7 @@ const ProjectContent = ({ projectId }) => {
         [selectedService.id]: false,
       }));
   
-      const updatedInstances = await getInstancesByServiceID(selectedService.id);
+      const updatedInstances = await getInstancesByServiceID(projectId, selectedService.name);
       setProjectInstances(updatedInstances);
     } catch (error) {
       console.error("Failed to create instance:", error);

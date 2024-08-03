@@ -11,10 +11,6 @@ export const UserProvider = ({ children }) => {
   const [billingDetails, setBillingDetails] = useState([]);
 
 
-  useEffect(() => {
-    console.log(projects);
-    console.log(services);
-  }, [services]);
 
   const signup = async (userInfo) => {
     const params = {
@@ -128,7 +124,6 @@ export const UserProvider = ({ children }) => {
 
   const getServicesByProjectID = async (projectID) => {
     const params = { projectID: projectID };
-    console.log(params);
     try {
       const response = await axios.get("http://localhost:8080/api/getServices", { params });
       return response.data;
@@ -137,8 +132,9 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const getInstancesByServiceID = async (serviceID) => {
-    const params = { serviceID };
+  const getInstancesByServiceID = async (projectId, serviceName) => {
+    const params = { projectId, name: serviceName };
+    console.log(params);
     try {
       const response = await axios.get("http://localhost:8080/api/getInstances", { params });
       return response.data;
