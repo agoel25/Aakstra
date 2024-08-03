@@ -5,9 +5,9 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [projects, setProjects] = useState(initialProjects);
-  const [services, setServices] = useState(initialServices);
-  const [instances, setInstances] = useState(initialInstances);
+  const [projects, setProjects] = useState(null);
+  const [services, setServices] = useState(null);
+  const [instances, setInstances] = useState(null);
   const [billingDetails, setBillingDetails] = useState([]);
 
 
