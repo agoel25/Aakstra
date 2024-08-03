@@ -99,12 +99,12 @@ export const UserProvider = ({ children }) => {
 
   const addProject = async (projectInfo) => {
     const params = {
-      email: user.email,
-      name: user.name,
+      email: projectInfo.email,
+      name: projectInfo.name,
       description: projectInfo.description,
       creationDate: "2011-02-27",
       status: "active",
-      partnerEmail: "",
+      partnerEmail: projectInfo.email,
     };
     try {
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
