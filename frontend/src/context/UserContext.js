@@ -37,19 +37,7 @@ export const UserProvider = ({ children }) => {
   const mockFetchWithParams = async (url, params, method = "POST") => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (url.includes("signup")) {
-          const userData = { email: params.email, name: params.name };
-          setUser(userData);
-          resolve(userData);
-        } else if (url.includes("login")) {
-          if (params.email === "test@example.com" && params.password === "password") {
-            const userData = { email: params.email, name: "Test User" };
-            setUser(userData);
-            resolve(userData);
-          } else {
-            reject(new Error("Login failed"));
-          }
-        } else if (url.includes("addProject")) {
+        if (url.includes("addProject")) {
           const projectData = { id: generateRandomId(), ...params };
           console.log("Project Created Successfully");
           setProjects([...projects, projectData]);
@@ -66,9 +54,6 @@ export const UserProvider = ({ children }) => {
           const serviceData = { id: generateRandomId(), projectID: params.projectID, name: params.name };
           setServices(prevServices => [...prevServices, serviceData]);
           resolve(serviceData);
-        } else if (url.includes("getProjectsByEmail")) {
-          const projectsByEmail = projects.filter(project => project.email === params.email);
-          resolve(projectsByEmail);
         } else if (url.includes("getServicesByProjectID")) {
           const servicesByProjectID = services.filter(service => service.projectID === params.projectID);
           resolve(servicesByProjectID);
@@ -90,12 +75,26 @@ export const UserProvider = ({ children }) => {
       password: userInfo.password,
       address: userInfo.address,
     };
-    return await mockFetchWithParams("http://localhost:8080/api/signup", params);
+    try {
+      const response = await axios.post("http://localhost:8080/api/signup", null, { params });
+      setUser({ email: params.email, name: params.name });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const login = async (email, password) => {
     const params = { email, password };
-    return await mockFetchWithParams("http://localhost:8080/api/login", params);
+    try {
+      const response = await axios.post("http://localhost:8080/api/login", null, { params });
+      if (response.status === 200) {
+        setUser({ email, name: "Test User" });
+      }
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
   };
 
   const addProject = async (projectInfo) => {
