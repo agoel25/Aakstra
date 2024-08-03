@@ -99,8 +99,8 @@ export const UserProvider = ({ children }) => {
 
   const addProject = async (projectInfo) => {
     const params = {
-      email: projectInfo.email,
-      name: projectInfo.name,
+      email: user.email,
+      name: user.name,
       description: projectInfo.description,
       creationDate: "2011-02-27",
       status: "active",
