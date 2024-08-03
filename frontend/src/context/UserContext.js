@@ -25,7 +25,7 @@ export const UserProvider = ({ children }) => {
       setUser({ email: params.email, name: params.name });
       return response.data;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -38,7 +38,7 @@ export const UserProvider = ({ children }) => {
       }
       return response.data;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -76,7 +76,7 @@ export const UserProvider = ({ children }) => {
       setBillingDetails([...billingDetails, newBilling]);
       return newBilling;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -93,13 +93,14 @@ export const UserProvider = ({ children }) => {
     };
 
 
+    console.log(params)
+
+
     try {
       const response = await axios.post("http://localhost:8080/api/addInstance", null, { params });
-      const newInstance = { ...params, id: response.data.id };
-      setInstances([...instances, newInstance]);
       return newInstance;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -111,7 +112,7 @@ export const UserProvider = ({ children }) => {
       setServices([...services, newService]);
       return newService;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -120,7 +121,7 @@ export const UserProvider = ({ children }) => {
       const response = await axios.get("http://localhost:8080/api/getProjects", { params: { email } });
       return response.data;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -130,7 +131,7 @@ export const UserProvider = ({ children }) => {
       const response = await axios.get("http://localhost:8080/api/getServices", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -140,7 +141,7 @@ export const UserProvider = ({ children }) => {
       const response = await axios.get("http://localhost:8080/api/getInstances", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
