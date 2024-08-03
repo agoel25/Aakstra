@@ -42,7 +42,7 @@ const ProjectContent = ({ projectId }) => {
     const newInstance = {
       serverID: "101",
       name: selectedService.name,
-      projectID:  selectedService.projectID,
+      projectID:  projectID,
       type: 'micro',
       totalCost: "0",
       status: 'running',
