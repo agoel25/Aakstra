@@ -5,7 +5,7 @@ import { useUser } from "@/context/UserContext";
 
 const cloudServices = ['gamma', 'authIt', 'GPUb', 'RapidX', 'cSQL'];
 
-const ProjectContent = ({ projectId }) => {
+const ProjectContent = ({ projectID }) => {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [newService, setNewService] = useState("");
@@ -14,17 +14,17 @@ const ProjectContent = ({ projectId }) => {
 
   const { projects, addInstance, addService, getServicesByProjectID, getInstancesByServiceID } = useUser();
 
-  const project = projects?.find((p) => p.id === projectId);
+  const project = projects?.find((p) => p.id === projectID);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const services = await getServicesByProjectID(projectId);
+        const services = await getServicesByProjectID(projectID);
         setProjectServices(services);
 
         const instances = await Promise.all(
           services.map(async (service) => {
-            const serviceInstances = await getInstancesByServiceID(projectId, service.name);
+            const serviceInstances = await getInstancesByServiceID(projectID, service.name);
             return serviceInstances;
           })
         );
@@ -36,7 +36,7 @@ const ProjectContent = ({ projectId }) => {
     };
 
     fetchData();
-  }, [projectId, getServicesByProjectID, getInstancesByServiceID]);
+  }, [projectID, getServicesByProjectID, getInstancesByServiceID]);
 
   const handleCreateInstance = async (instance) => {
     const newInstance = {
@@ -54,7 +54,7 @@ const ProjectContent = ({ projectId }) => {
     try {
       await addInstance({ ...newInstance });
   
-      const updatedInstances = await getInstancesByServiceID(projectId, selectedService.name);
+      const updatedInstances = await getInstancesByServiceID(projectID, selectedService.name);
       setProjectInstances(updatedInstances);
     } catch (error) {
       console.error("Failed to create instance:", error);
@@ -73,8 +73,8 @@ const ProjectContent = ({ projectId }) => {
   const handleAddService = async (service) => {
     if (service && !projectServices.find((s) => s.name === service)) {
       try {
-        await addService({ projectID: projectId, name: service });
-        const updatedServices = await getServicesByProjectID(projectId);
+        await addService({ projectID: projectID, name: service });
+        const updatedServices = await getServicesByProjectID(projectID);
         setProjectServices(updatedServices);
         setNewService("");
       } catch (error) {

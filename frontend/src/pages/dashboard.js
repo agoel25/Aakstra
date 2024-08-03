@@ -117,7 +117,7 @@ export default function Dashboard() {
           />
         )}
         {currentView === 'project' && selectedProjectId && (
-          <ProjectContent projectId={selectedProjectId} projects={projects} />
+          <ProjectContent projectID={selectedProjectId} projects={projects} />
         )}
         <CreateProjectModal
           isOpen={isCreating}
