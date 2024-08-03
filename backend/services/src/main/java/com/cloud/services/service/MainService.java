@@ -161,4 +161,14 @@ public class MainService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/getBillingDetails")
+    public ResponseEntity<List<BillingDetails>> getBillingDetails(@RequestParam String email) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.getAllCards(email), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

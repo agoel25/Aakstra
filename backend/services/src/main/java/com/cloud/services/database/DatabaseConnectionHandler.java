@@ -198,6 +198,7 @@ public class DatabaseConnectionHandler {
         return false;
     }
 
+    // Billing Methods
     public void addBilling(BillingDetails billingDetails) throws SQLException {
         String addressInfoQuery = "INSERT INTO AddressInfo VALUES (?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(addressInfoQuery)) {
@@ -244,6 +245,26 @@ public class DatabaseConnectionHandler {
         }
     }
 
+    public List<BillingDetails> getAllCards(String email) throws SQLException {
+        String query = "SELECT PaymentInfo.CardNumber, PaymentInfo.Email, PaymentInfo.CVV, PaymentInfo.PostalCode, PaymentInfo.ExpiryDate, PaymentInfo.isDefault, AddressInfo.City, AddressInfo.Country, BillingInfo.PaymentType " +
+                "FROM PaymentInfo, AddressInfo, BillingInfo " +
+                "WHERE PaymentInfo.PostalCode = AddressInfo.PostalCode AND PaymentInfo.CardNumber = BillingInfo.CardNumber AND PaymentInfo.Email = ?";
+
+        List<BillingDetails> allBillingDetails = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                BillingDetails billingDetails = new BillingDetails(rs.getString("CardNumber"), rs.getString("Email"), rs.getString("CVV"), rs.getString("PostalCode"), rs.getString("ExpiryDate"), rs.getString("isDefault"), rs.getString("City"), rs.getString("Country"), rs.getString("PaymentType"));
+                allBillingDetails.add(billingDetails);
+            }
+            logger.info("Got all Billing Details {}", allBillingDetails);
+        }
+        return allBillingDetails;
+    }
+
     // Instance Methods
     public Integer getNextInstanceID() throws SQLException {
         String query = "SELECT COUNT(*) FROM Instance";
@@ -260,7 +281,6 @@ public class DatabaseConnectionHandler {
         return null;
     }
 
-    // Instance Methods
     public void addInstance(Instance instance) throws SQLException {
         String addressInfoQuery = "INSERT INTO Instance VALUES (?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(addressInfoQuery)) {
