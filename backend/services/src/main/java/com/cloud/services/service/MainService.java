@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+
+import static com.cloud.services.database.DatabaseConnectionHandler.logger;
 
 @Service
 @RestController
@@ -128,6 +131,16 @@ public class MainService {
             return new ResponseEntity<>("Added service successfully", HttpStatus.OK);
         } catch (SQLException e) {
             return new ResponseEntity<>("Failed to add service: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getProjects")
+    public ResponseEntity<List<Project>> getProjects(@RequestParam String email) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.getAllProjects(email), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
