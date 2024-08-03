@@ -191,4 +191,23 @@ public class MainService {
             return new ResponseEntity<>("Failed to deleted project: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/updateProject")
+    public ResponseEntity<String> updateProject(@RequestParam Integer projectId,
+                                                @RequestParam String name,
+                                                @RequestParam String description,
+                                                @RequestParam String creationDate,
+                                                @RequestParam String status,
+                                                @RequestParam String partnerEmail) {
+        try {
+            Project project = new Project(projectId, name, description, creationDate, status, partnerEmail);
+            databaseConnectionHandler.updateProject(project);
+            return new ResponseEntity<>("Project updated successfully", HttpStatus.OK);
+        } catch (SQLException e) {
+            if (e.getMessage().contains("Project name is not unique")) {
+                return new ResponseEntity<>("Failed to update project: " + e.getMessage(), HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity<>("Failed to update project: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -72,7 +72,51 @@ public class DatabaseConnectionHandler {
         return null;
     }
 
+    public boolean isProjectNameUnique(String name) throws SQLException {
+        String query = "SELECT COUNT(*) FROM project WHERE Name = " + "'" + name + "'";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return true;
+    }
+
+    public void updateProject(Project project) throws SQLException {
+        if (!isProjectNameUnique(project.getName())) {
+            logger.error(EXCEPTION_TAG + "Project name is not unique");
+            throw new SQLException("Project name is not unique");
+        } else {
+            String updateQuery = "UPDATE project SET Name = ?, Description = ?, CreationDate = ?, Status = ? WHERE ProjectID = ?";
+            try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
+                ps.setString(1, project.getName());
+                ps.setString(2, project.getDescription());
+                ps.setDate(3, java.sql.Date.valueOf(project.getCreationDate()));
+                ps.setString(4, project.getStatus());
+                ps.setInt(5, project.getId());
+                int rowCount = ps.executeUpdate();
+                if (rowCount == 0) {
+                    throw new SQLException("No rows affected.");
+                }
+                connection.commit();
+                logger.info("Updated project {}", project.getName());
+            } catch (SQLException e) {
+                rollbackConnection();
+                logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+                throw new SQLException(e.getMessage());
+            }
+        }
+    }
+
     public void insertProject(Project project, String email, String partnerEmail) throws SQLException {
+        // TODO: add name unique constraint
         String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
             ps.setInt(1, project.getId());
