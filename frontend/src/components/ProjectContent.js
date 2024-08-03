@@ -41,11 +41,11 @@ const ProjectContent = ({ projectId }) => {
 
   const handleCreateInstance = async (instance) => {
     const newInstance = {
-      serverID: 101,
+      serverID: "101",
       name: selectedService.name,
       projectID:  selectedService.projectID,
       type: 'micro',
-      totalCost: 0,
+      totalCost: "0",
       status: 'running',
       launchDate: '2024-04-04',
       stopDate: '2024-05-05',

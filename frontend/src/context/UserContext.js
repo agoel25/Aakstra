@@ -82,15 +82,17 @@ export const UserProvider = ({ children }) => {
 
   const addInstance = async (instanceInfo) => {
     const params = {
-      name: instanceInfo.name,
       serverID: instanceInfo.serverID,
-      projectID: instanceInfo.projectID,
+      name: instanceInfo.name,
+      projectID:  instanceInfo.projectID,
       type: instanceInfo.type,
       totalCost: instanceInfo.totalCost,
       status: instanceInfo.status,
       launchDate: instanceInfo.launchDate,
       stopDate: instanceInfo.stopDate,
     };
+
+
     try {
       const response = await axios.post("http://localhost:8080/api/addInstance", null, { params });
       const newInstance = { ...params, id: response.data.id };
