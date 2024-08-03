@@ -13,14 +13,13 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Dashboard() {
   const [newProjectName, setNewProjectName] = useState("");
-  const [projects, setProjects] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
   const [currentView, setCurrentView] = useState('home');
   const [isAddingBilling, setIsAddingBilling] = useState(false);
   const [newBillingDetail, setNewBillingDetail] = useState({ number: "", cvv: "", expiry: "" });
   const [selectedProjectId, setSelectedProjectId] = useState(null);
 
-  const { user, billingDetails, addProject, addCard, getProjectsByEmail } = useUser();
+  const { user, billingDetails, setProjects, projects, addCard, getProjectsByEmail } = useUser();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -118,7 +117,7 @@ export default function Dashboard() {
           />
         )}
         {currentView === 'project' && selectedProjectId && (
-          <ProjectContent projectId={selectedProjectId} />
+          <ProjectContent projectId={selectedProjectId} projects={projects} />
         )}
         <CreateProjectModal
           isOpen={isCreating}
