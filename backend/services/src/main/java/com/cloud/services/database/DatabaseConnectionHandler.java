@@ -6,10 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cloud.services.model.BillingDetails;
-import com.cloud.services.model.Customer;
-import com.cloud.services.model.Instance;
-import com.cloud.services.model.Project;
+import com.cloud.services.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -76,7 +73,7 @@ public class DatabaseConnectionHandler {
     }
 
     public void insertProject(Project project, String email, String partnerEmail) throws SQLException {
-        String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?, ?)";
+        String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
             ps.setInt(1, project.getId());
             ps.setString(2, project.getName());
@@ -142,6 +139,26 @@ public class DatabaseConnectionHandler {
             logger.info("Got all Projects {}", email);
         }
         return allProjects;
+    }
+
+    public List<ServiceDetails> getAllServices(String projectID) throws SQLException {
+        String query = "SELECT ServiceDetails.Name, ServiceDetails.Description, ServiceDetails.Status, ServiceDetails.CostPerUnit, ServiceType.Type, ServiceType.CostType " +
+                "FROM ProjectUsesService, ServiceDetails, ServiceType " +
+                "WHERE ProjectUsesService.Name = PartOf.ProjectID AND ServiceDetails.Type = ServiceType.Type AND ProjectUsesService.ProjectID = ?";
+
+        List<ServiceDetails> allServices = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, projectID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ServiceDetails serviceDetails = new ServiceDetails(rs.getString("Name"), rs.getString("Description"), rs.getString("Status"), rs.getString("CostPerUnit"), rs.getString("Type"), rs.getString("CostType"));
+                allServices.add(serviceDetails);
+            }
+            logger.info("Got all Services {}", projectID);
+        }
+        return allServices;
     }
 
     // Customer methods
@@ -243,6 +260,7 @@ public class DatabaseConnectionHandler {
         return null;
     }
 
+    // Instance Methods
     public void addInstance(Instance instance) throws SQLException {
         String addressInfoQuery = "INSERT INTO Instance VALUES (?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(addressInfoQuery)) {
@@ -263,6 +281,25 @@ public class DatabaseConnectionHandler {
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             throw new SQLException(e.getMessage());
         }
+    }
+
+    public List<Instance> getAllInstances(String projectID, String serviceName) throws SQLException {
+        String query = "SELECT * FROM Instance WHERE ProjectID = ? AND Name = ?";
+
+        List<Instance> allInstances = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, Integer.parseInt(projectID));
+            ps.setString(2, serviceName);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Instance instance = new Instance(rs.getInt("InstanceID"), rs.getString("Name"), rs.getString("ServerID"), rs.getString("ProjectID"), rs.getString("Type"), rs.getString("TotalCost"), rs.getString("Status"), rs.getString("LaunchDate"), rs.getString("stopDate"));
+                allInstances.add(instance);
+            }
+            logger.info("Got all Services {}", projectID);
+        }
+        return allInstances;
     }
 
     public void insertProjectService(String projectID, String name) throws SQLException {

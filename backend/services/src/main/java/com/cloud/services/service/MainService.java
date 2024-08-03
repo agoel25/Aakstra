@@ -1,10 +1,7 @@
 package com.cloud.services.service;
 
 import com.cloud.services.database.DatabaseConnectionHandler;
-import com.cloud.services.model.BillingDetails;
-import com.cloud.services.model.Customer;
-import com.cloud.services.model.Instance;
-import com.cloud.services.model.Project;
+import com.cloud.services.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -138,6 +135,27 @@ public class MainService {
     public ResponseEntity<List<Project>> getProjects(@RequestParam String email) {
         try {
             return new ResponseEntity<>(databaseConnectionHandler.getAllProjects(email), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getServices")
+    public ResponseEntity<List<ServiceDetails>> getServices(@RequestParam String projectID) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.getAllServices(projectID), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getInstances")
+    public ResponseEntity<List<Instance>> getInstances(@RequestParam String projectID,
+                                                       @RequestParam String name) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.getAllInstances(projectID, name), HttpStatus.OK);
         } catch (SQLException e) {
             logger.info(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
