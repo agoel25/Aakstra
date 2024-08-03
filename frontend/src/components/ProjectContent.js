@@ -15,7 +15,7 @@ const ProjectContent = ({ projectId }) => {
 
   const { projects, addInstance, addService, getServicesByProjectID, getInstancesByServiceID } = useUser();
 
-  const project = projects.find((p) => p.id === projectId);
+  const project = projects?.find((p) => p.id === projectId);
 
   useEffect(() => {
     const fetchData = async () => {
