@@ -42,7 +42,6 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
       email: user.email,
       name: newProjectName,
       description,
-      securityConfiguration,
     };
 
     try {
