@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseConnectionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseConnectionHandler.class);
+    public static final Logger logger = LoggerFactory.getLogger(DatabaseConnectionHandler.class);
     private static final String EXCEPTION_TAG = "[EXCEPTION]";
 
     private Connection connection = null;
@@ -76,13 +76,14 @@ public class DatabaseConnectionHandler {
     }
 
     public void insertProject(Project project, String email, String partnerEmail) throws SQLException {
-        String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?)";
+        String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
             ps.setInt(1, project.getId());
             ps.setString(2, project.getName());
             ps.setString(3, project.getDescription());
             ps.setDate(4, java.sql.Date.valueOf(project.getCreationDate()));
             ps.setString(5, project.getStatus());
+            ps.setString(6, project.getPartnerEmail());
             ps.execute();
             connection.commit();
             logger.info("Inserted project {}", project.getName());
@@ -121,6 +122,26 @@ public class DatabaseConnectionHandler {
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             throw new SQLException(e.getMessage());
         }
+    }
+
+    public List<Project> getAllProjects(String email) throws SQLException {
+        String query = "SELECT Project.ProjectID, Project.Name, Project.Description, Project.CreationDate, Project.Status, Project.PartnerEmail " +
+                       "FROM Project, PartOf " +
+                       "WHERE Project.ProjectID = PartOf.ProjectID AND PartOf.Email = ?";
+
+        List<Project> allProjects = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Project project = new Project(rs.getInt("ProjectID"), rs.getString("Name"), rs.getString("Description"), rs.getString("CreationDate"), rs.getString("Status"), rs.getString("PartnerEmail"));
+                allProjects.add(project);
+            }
+            logger.info("Got all Projects {}", email);
+        }
+        return allProjects;
     }
 
     // Customer methods
@@ -328,7 +349,8 @@ public class DatabaseConnectionHandler {
                     "Name VARCHAR(30)," +
                     "Description VARCHAR(100)," +
                     "CreationDate DATE NOT NULL," +
-                    "Status VARCHAR(20)" +
+                    "Status VARCHAR(20)," +
+                    "PartnerEmail VARCHAR(30)" +
                     ")");
             queryList.add("CREATE TABLE PartOf (" +
                     "Email VARCHAR(30)," +
