@@ -41,13 +41,19 @@ const ProjectContent = ({ projectId }) => {
 
   const handleCreateInstance = async (instance) => {
     const newInstance = {
-      ...instance,
-      launchDate: new Date().toLocaleString(),
-      status: "Running",
+      serverID: 101,
+      name: selectedService.name,
+      projectID:  selectedService.projectID,
+      type: 'micro',
+      totalCost: 0,
+      status: 'running',
+      launchDate: '2024-04-04',
+      stopDate: '2024-05-05',
     };
+    
   
     try {
-      await addInstance({ ...newInstance, serviceID: selectedService.id });
+      await addInstance({ ...newInstance });
       setCollapsedServices((prevCollapsedServices) => ({
         ...prevCollapsedServices,
         [selectedService.id]: false,
@@ -163,11 +169,11 @@ const ProjectContent = ({ projectId }) => {
                           .filter((i) => i.serviceID === service.id)
                           .map((instance, i) => (
                             <tr key={i}>
-                              <td className="py-2 px-4 border-b">{instance.id}</td>
-                              <td className="py-2 px-4 border-b">{instance.type}</td>
-                              <td className="py-2 px-4 border-b">{instance.totalCost}</td>
-                              <td className="py-2 px-4 border-b">{instance.launchDate}</td>
-                              <td className="py-2 px-4 border-b">{instance.status}</td>
+                              <td className="py-2 px-4 border-b">{instance?.id}</td>
+                              <td className="py-2 px-4 border-b">{instance?.type}</td>
+                              <td className="py-2 px-4 border-b">{instance?.totalCost}</td>
+                              <td className="py-2 px-4 border-b">{instance?.launchDate}</td>
+                              <td className="py-2 px-4 border-b">{instance?.status}</td>
                               <td className="py-2 px-4 border-b">
                                 <button
                                   className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
