@@ -134,7 +134,6 @@ export const UserProvider = ({ children }) => {
 
   const getInstancesByServiceID = async (projectID, serviceName) => {
     const params = { projectID, name: serviceName };
-    console.log(params);
     try {
       const response = await axios.get("http://localhost:8080/api/getInstances", { params });
       return response.data;

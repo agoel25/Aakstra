@@ -46,8 +46,6 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
     try {
       const newProject = await addProject(projectData);
 
-      console.log(newProject);
-
       for (const service of selectedServices) {
         await addService({ projectID: newProject.id, name: service });
       }
