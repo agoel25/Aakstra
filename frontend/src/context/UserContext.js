@@ -127,7 +127,8 @@ export const UserProvider = ({ children }) => {
   };
 
   const getServicesByProjectID = async (projectID) => {
-    const params = { projectID };
+    const params = { projectID: projectID };
+    console.log(params);
     try {
       const response = await axios.get("http://localhost:8080/api/getServices", { params });
       return response.data;
