@@ -4,7 +4,7 @@
 Our project models a cloud service provider, offering customers the ability to create and manage projects. Users can utilize various services, create and manage instances, configure security settings for them and also compute the total costs associated with their cloud service usage.
 
 ## ER Diagram
-![ER Diagram](./CPSC304_ERD_3.jpeg)
+![ER Diagram](./docs/erd.jpeg)
 
 ## Project Timeline
 We will be dividing up the tasks in 2 sections: Frontend and Backend.
@@ -62,19 +62,19 @@ We will be dividing up the tasks in 2 sections: Frontend and Backend.
 2.	This is our first project with separate frontend and backend teams, potentially causing communication problems or blockers.
 
 ## Frontend Views
-- [Login Page](./Frontend_Views/LoginPage.png)
-- [Sign Up Page](./Frontend_Views/SignUpPage.png)
-- [Sign Up Billing Page](./Frontend_Views/SignUpBillingPage.png)
-- [Project Page Empty](./Frontend_Views/ProjectPageEmpty.png)
-- [Project Page Populated](./Frontend_Views/ProjectPagePopulated.png)
-- [Create Project](./Frontend_Views/CreateProject.png)
-- [Create Instance](./Frontend_Views/CreateInstance.png)
-- [Billing Detail Page](./Frontend_Views/BillingDetailPage.png)
+- [Login Page](./docs/frontend_views/LoginPage.png)
+- [Sign Up Page](./docs/frontend_views/SignUpPage.png)
+- [Sign Up Billing Page](./docs/frontend_views/SignUpBillingPage.png)
+- [Project Page Empty](./docs/frontend_views/ProjectPageEmpty.png)
+- [Project Page Populated](./docs/frontend_views/ProjectPagePopulated.png)
+- [Create Project](./docs/frontend_views/CreateProject.png)
+- [Create Instance](./docs/frontend_views/CreateInstance.png)
+- [Billing Detail Page](./docs/frontend_views/BillingDetailPage.png)
 
 ### Milestones
-- [Milestone 1](./Milestone%201.pdf)
-- [Milestone 2](./Milestone%202.pdf)
-- [Milestone 3 Cover Page](./Milestone%203%20Cover%20Page.pdf)
+- [Milestone 1](./docs/milestone_1.pdf)
+- [Milestone 2](./docs/milestone_2.pdf)
+- [Milestone 3 Cover Page](./docs/milestone_3_cover.pdf)
 
 ### Group Members:
 - Aditya Goel
