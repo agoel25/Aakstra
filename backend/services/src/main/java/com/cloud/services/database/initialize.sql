@@ -222,12 +222,25 @@ INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, Partner
 VALUES (4, 'ModelTraining', 'AI models on cloud GPU', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'john.doe@dummy.com');
 INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
 VALUES (5, 'Store', 'Cloud storage', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'john.doe@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (6, 'Optimization', 'Optimizing all workflows', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'james.w@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (7, 'DevOps', 'Creating DevOps workflows', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'james.w@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (8, 'Networking', 'Creating a cloud network', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'james.w@dummy.com');
+
 
 INSERT INTO PartOf(Email, ProjectID) VALUES ('john.doe@dummy.com', 1);
 INSERT INTO PartOf(Email, ProjectID) VALUES ('james.w@dummy.com', 2);
 INSERT INTO PartOf(Email, ProjectID) VALUES ('arjund122@dummy.com', 3);
 INSERT INTO PartOf(Email, ProjectID) VALUES ('jin.park@dummy.com', 4);
 INSERT INTO PartOf(Email, ProjectID) VALUES ('jane.doe@dummy.com', 5);
+INSERT INTO PartOf(Email, ProjectID) VALUES ('john.doe@dummy.com', 6);
+INSERT INTO PartOf(Email, ProjectID) VALUES ('john.doe@dummy.com', 7);
+INSERT INTO PartOf(Email, ProjectID) VALUES ('john.doe@dummy.com', 8);
+INSERT INTO PartOf(Email, ProjectID) VALUES ('james.w@dummy.com', 6);
+INSERT INTO PartOf(Email, ProjectID) VALUES ('james.w@dummy.com', 7);
+INSERT INTO PartOf(Email, ProjectID) VALUES ('james.w@dummy.com', 8);
 
 INSERT INTO BillingInfo(CardNumber, PaymentType)
 VALUES ('4536123465366009', 'Credit');
@@ -239,6 +252,10 @@ INSERT INTO BillingInfo(CardNumber, PaymentType)
 VALUES ('2378001083456789', 'Credit');
 INSERT INTO BillingInfo(CardNumber, PaymentType)
 VALUES ('0101999963531010', 'Credit');
+INSERT INTO BillingInfo(CardNumber, PaymentType)
+VALUES ('1763867695430090', 'Debit');
+INSERT INTO BillingInfo(CardNumber, PaymentType)
+VALUES ('0065142595430090', 'Debit');
 
 INSERT INTO AddressInfo(PostalCode, City, Country)
 VALUES ('V6T1Z2', 'Vancouver', 'Canada');
@@ -250,6 +267,10 @@ INSERT INTO AddressInfo(PostalCode, City, Country)
 VALUES ('01014', 'Seoul', 'South Korea');
 INSERT INTO AddressInfo(PostalCode, City, Country)
 VALUES ('89116', 'Las Vegas', 'United States');
+INSERT INTO AddressInfo(PostalCode, City, Country)
+VALUES ('145-0654', 'Kyoto', 'Japan');
+INSERT INTO AddressInfo(PostalCode, City, Country)
+VALUES ('1205', 'Geneva', 'Switzerland');
 
 INSERT INTO PaymentInfo(CardNumber, Email, CVV, PostalCode, ExpiryDate, IsDefault)
 VALUES ('4536123465366009', 'john.doe@dummy.com', 001, 'V6T1Z2', TO_DATE('2024-12-01', 'YYYY-MM-DD'), 'TRUE');
@@ -261,6 +282,10 @@ INSERT INTO PaymentInfo(CardNumber, Email, CVV, PostalCode, ExpiryDate, IsDefaul
 VALUES ('2378001083456789', 'jin.park@dummy.com', 400, '01014', TO_DATE('2026-06-30', 'YYYY-MM-DD'), 'TRUE');
 INSERT INTO PaymentInfo(CardNumber, Email, CVV, PostalCode, ExpiryDate, IsDefault)
 VALUES ('0101999963531010', 'jane.doe@dummy.com', 249, '89116', TO_DATE('2025-05-25', 'YYYY-MM-DD'), 'TRUE');
+INSERT INTO PaymentInfo(CardNumber, Email, CVV, PostalCode, ExpiryDate, IsDefault)
+VALUES ('1763867695430090', 'john.doe@dummy.com', 234, '145-0654', TO_DATE('2029-06-01', 'YYYY-MM-DD'), 'FALSE');
+INSERT INTO PaymentInfo(CardNumber, Email, CVV, PostalCode, ExpiryDate, IsDefault)
+VALUES ('0065142595430090', 'john.doe@dummy.com', 982, '1205', TO_DATE('2027-03-03', 'YYYY-MM-DD'), 'FALSE');
 
 INSERT INTO ServiceType(Type, CostType)
 VALUES ('Serverless', 'PerJob');
@@ -274,27 +299,65 @@ INSERT INTO ServiceType(Type, CostType)
 VALUES ('Database', 'PerQuery');
 
 INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
-VALUES ('gamma', 'Serverless', 'Handling serverless functions', 'Active', 1);
+VALUES ('gamma', 'Serverless', 'Handling serverless functions', 'Active', 2);
 INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
 VALUES ('authIt', 'Authentication', 'Authentication with large capacity', 'Active', 2);
 INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
-VALUES ('GPUb', 'GPUCompute', 'GPU-based rendering service', 'Active', 3);
+VALUES ('GPUb', 'GPUCompute', 'GPU-based rendering service', 'Active', 10);
 INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
-VALUES ('RapidX', 'HPC', 'High performance computing service', 'Active', 4);
+VALUES ('RapidX', 'HPC', 'High performance computing service', 'Active', 3);
 INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
-VALUES ('cSQL', 'Database', 'Cloud SQL database service', 'Active', 5);
+VALUES ('cSQL', 'Database', 'Cloud SQL database service', 'Active', 3);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('dSQL', 'Database', 'Dynamic SQL', 'Active', 1);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('veryFy', 'Authentication', 'Faster authentication', 'Active', 3);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('gigaGPU', 'GPUCompute', 'GPU-based gaming', 'Active', 10);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('mlGPU', 'GPUCompute', 'GPU-based ML training', 'Active', 9);
 
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('john.doe@dummy.com', 'gamma');
+INSERT INTO CustomerUsesService (Email, Name) VALUES ('john.doe@dummy.com', 'authIt');
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('james.w@dummy.com', 'authIt');
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('arjund122@dummy.com', 'GPUb');
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('jin.park@dummy.com', 'RapidX');
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('jane.doe@dummy.com', 'cSQL');
 
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'gamma');
-INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (2, 'authIt');
-INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (3, 'GPUb');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'authIt');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'GPUb');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'RapidX');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'cSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'dSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'veryFy');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'gigaGPU');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'mlGPU');
+
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (2, 'RapidX');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (3, 'RapidX');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (4, 'RapidX');
-INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (5, 'cSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (5, 'RapidX');
+
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'gamma');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'authIt');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'GPUb');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'RapidX');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'cSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'dSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'veryFy');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'gigaGPU');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'mlGPU');
+
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'gamma');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'authIt');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'GPUb');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'RapidX');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'cSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'dSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'mlGPU');
+
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (8, 'RapidX');
 
 INSERT INTO Storage(Name, Capacity, Latency) VALUES ('cSQL', 300, 7);
 
@@ -318,6 +381,23 @@ VALUES ('sa-east-1', 'Caracas', 200, 'Active');
 INSERT INTO AvailableIn(ServiceName, RegionName)
 VALUES ('gamma', 'us-east-1');
 INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('authIt', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('GPUb', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('RapidX', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('cSQL', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('dSQL', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('veryFy', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('gigaGPU', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('mlGPU', 'us-east-1');
+
+INSERT INTO AvailableIn(ServiceName, RegionName)
 VALUES ('authIt', 'us-east-2');
 INSERT INTO AvailableIn(ServiceName, RegionName)
 VALUES ('GPUb', 'eu-central-1');
@@ -331,6 +411,9 @@ INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('HTTPS',
 INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('FTP', 'SNMP');
 INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('SMTP', 'DNS');
 INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('IMAP', 'TLS');
+INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('SSH', 'SSL');
+INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('SFTP', 'FTP');
+INSERT INTO SecurityProtocol(InboundProtocol, OutboundProtocol) VALUES ('ICMP', 'TCP');
 
 INSERT INTO SecurityInfo(ProjectID, Name, InboundProtocol, CreationDate)
 VALUES (1, 'HyperText Transfer Protocol', 'HTTP', TO_DATE('2024-07-21', 'YYYY-MM-DD'));
@@ -342,12 +425,21 @@ INSERT INTO SecurityInfo(ProjectID, Name, InboundProtocol, CreationDate)
 VALUES (4, 'Simple Mail Transfer Protocol', 'SMTP', TO_DATE('2024-07-21', 'YYYY-MM-DD'));
 INSERT INTO SecurityInfo(ProjectID, Name, InboundProtocol, CreationDate)
 VALUES (5, 'Internet Message Access Protocol', 'IMAP', TO_DATE('2024-07-21', 'YYYY-MM-DD'));
+INSERT INTO SecurityInfo(ProjectID, Name, InboundProtocol, CreationDate)
+VALUES (6, 'Secure Shell', 'SSH', TO_DATE('2024-07-21', 'YYYY-MM-DD'));
+INSERT INTO SecurityInfo(ProjectID, Name, InboundProtocol, CreationDate)
+VALUES (7, 'Secure File Transfer Protocol', 'SFTP', TO_DATE('2024-07-21', 'YYYY-MM-DD'));
+INSERT INTO SecurityInfo(ProjectID, Name, InboundProtocol, CreationDate)
+VALUES (8, 'Internet Control Message Protocol', 'ICMP', TO_DATE('2024-07-21', 'YYYY-MM-DD'));
 
 INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (1, 1);
 INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (2, 2);
 INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (3, 3);
 INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (4, 4);
 INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (5, 5);
+INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (6, 6);
+INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (7, 7);
+INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID) VALUES (8, 8);
 
 INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)
 VALUES ('functional.micro', 1, 8, 'Linux', 1);
@@ -372,15 +464,38 @@ INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, Up
 VALUES (105, 'sa-east-1', 'storage.large', 'Inactive', 300, TO_DATE('2024-07-16', 'YYYY-MM-DD'), TO_DATE('2024-07-16', 'YYYY-MM-DD'));
 
 INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
-VALUES (1, 'gamma', 101, 1, 'micro', 0, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+VALUES (1, 'gamma', 101, 1, 'micro', 100, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
 INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
-VALUES (2, 'authIt', 102, 2, 'large', 9, 'Stopped', TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_DATE('2024-07-21', 'YYYY-MM-DD'));
+VALUES (2, 'authIt', 102, 2, 'large', 140, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
 INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
-VALUES (3, 'GPUb', 103, 3, 'large', 0, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+VALUES (3, 'GPUb', 103, 3, 'large', 140, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
 INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
-VALUES (4, 'RapidX', 104, 4, 'xlarge', 0, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+VALUES (4, 'RapidX', 104, 4, 'xlarge', 200, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
 INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
-VALUES (5, 'cSQL', 105, 5, 'large', 5, 'Stopped', TO_DATE('2024-07-16', 'YYYY-MM-DD'), TO_DATE('2024-07-16', 'YYYY-MM-DD'));
+VALUES (5, 'cSQL', 105, 2, 'large', 130, 'Running', TO_DATE('2024-07-16', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (15, 'cSQL', 105, 2, 'xlarge', 130, 'Running', TO_DATE('2024-07-16', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (16, 'cSQL', 105, 2, 'xlarge', 170, 'Running', TO_DATE('2024-07-16', 'YYYY-MM-DD'), NULL);
+
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (6, 'gamma', 101, 1, 'micro', 100, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (7, 'gamma', 101, 1, 'micro', 90, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (8, 'gamma', 101, 1, 'large', 120, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (9, 'gamma', 101, 1, 'large', 130, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (10, 'gamma', 101, 1, 'large', 120, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (11, 'gamma', 101, 1, 'xlarge', 180, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (12, 'gamma', 101, 1, 'xlarge', 170, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (13, 'gamma', 101, 1, 'xlarge', 200, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
+INSERT INTO Instance(InstanceID, Name, ServerID, ProjectID, Type, TotalCost, Status, LaunchDate, StopDate)
+VALUES (14, 'gamma', 101, 1, 'medium', 110, 'Running', TO_DATE('2024-07-20', 'YYYY-MM-DD'), NULL);
 
 INSERT INTO Bills(InstanceID, Email, CardNumber, Cost)
 VALUES (1, 'john.doe@dummy.com', '4536123465366009', 500);
@@ -392,3 +507,7 @@ INSERT INTO Bills(InstanceID, Email, CardNumber, Cost)
 VALUES (4, 'jin.park@dummy.com', '2378001083456789', 123);
 INSERT INTO Bills(InstanceID, Email, CardNumber, Cost)
 VALUES (5, 'jane.doe@dummy.com', '0101999963531010', 890);
+INSERT INTO Bills(InstanceID, Email, CardNumber, Cost)
+VALUES (6, 'john.doe@dummy.com', '4536123465366009', 400);
+
+COMMIT;
