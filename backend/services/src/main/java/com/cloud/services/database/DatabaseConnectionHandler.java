@@ -51,9 +51,9 @@ public class DatabaseConnectionHandler {
     }
 
     public void setupDatabase() {
-        dropTablesIfExists();
-        createAllTables();
-        insertAllData();
+//        dropTablesIfExists();
+//        createAllTables();
+//        insertAllData();
     }
 
     // Project methods
@@ -534,7 +534,7 @@ public class DatabaseConnectionHandler {
     }
 
     public List<InstanceCost> getCostPerInstanceType(String projectID) throws SQLException {
-        String query = "SELECT Type, SUM(TotalCost) FROM Instance WHERE ProjectID = ? GROUP BY Type";
+        String query = "SELECT Type, SUM(TotalCost) AS TotalCost FROM Instance WHERE ProjectID = ? GROUP BY Type";
 
         List<InstanceCost> instanceCosts = new ArrayList<>();
 
@@ -578,12 +578,13 @@ public class DatabaseConnectionHandler {
                         "GROUP BY I.Type " +
                         "HAVING AVG(I.TotalCost) >= ALL (SELECT AVG(I2.TotalCost) " +
                                                          "FROM Instance I2 " +
-                                                         "GROUP BY Type)";
+                                                         "WHERE I2.ProjectID = ?)";
 
         String result = "";
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, Integer.parseInt(projectID));
+            ps.setInt(2, Integer.parseInt(projectID));
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
