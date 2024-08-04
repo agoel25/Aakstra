@@ -210,4 +210,16 @@ public class MainService {
             return new ResponseEntity<>("Failed to update project: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/projection")
+    public ResponseEntity<List<List<String>>> projection(@RequestParam String attributes,
+                                                         @RequestParam String relation,
+                                                         @RequestParam Integer numAttributes) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.projection(attributes, relation, numAttributes), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
