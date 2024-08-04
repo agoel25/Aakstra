@@ -430,6 +430,18 @@ INSERT INTO AvailableIn(ServiceName, RegionName)
 VALUES ('gigaGPU', 'us-east-1');
 INSERT INTO AvailableIn(ServiceName, RegionName)
 VALUES ('mlGPU', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('aSQL', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('bSQL', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('eSQL', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('RapidZ', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('beta', 'us-east-1');
+INSERT INTO AvailableIn(ServiceName, RegionName)
+VALUES ('veryFyIt', 'us-east-1');
 
 INSERT INTO AvailableIn(ServiceName, RegionName)
 VALUES ('authIt', 'us-east-2');
