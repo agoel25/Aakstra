@@ -34,8 +34,8 @@ ProjectID INTEGER PRIMARY KEY,
 Name VARCHAR(30),
 Description VARCHAR(100),
 CreationDate DATE NOT NULL,
-Status VARCHAR(20));
--- PartnerEmail VARCHAR(30)
+Status VARCHAR(20),
+PartnerEmail VARCHAR(30));
 
 CREATE TABLE PartOf (
 Email VARCHAR(30),
@@ -212,16 +212,16 @@ VALUES ('jin.park@dummy.com', 'Jin Park', '4567890123', 'password', 'Blue spring
 INSERT INTO Customer (Email, Name, PhoneNumber, Password, Address)
 VALUES ('jane.doe@dummy.com', 'Jane Doe', '5678901234', 'num123', '2100 Student Union, Vancouver');
 
-INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status)
-VALUES (1, 'Migrate', 'Migrating app to cloud', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active');
-INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status)
-VALUES (2, 'Analytics', 'Cloud analytics', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active');
-INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status)
-VALUES (3, 'OpsPipeline', 'Operations Pipeline', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active');
-INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status)
-VALUES (4, 'ModelTraining', 'AI models on cloud GPU', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active');
-INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status)
-VALUES (5, 'Store', 'Cloud storage', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (1, 'Migrate', 'Migrating app to cloud', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'james.w@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (2, 'Analytics', 'Cloud analytics', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'john.doe@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (3, 'OpsPipeline', 'Operations Pipeline', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'john.doe@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (4, 'ModelTraining', 'AI models on cloud GPU', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'john.doe@dummy.com');
+INSERT INTO Project (ProjectID, Name, Description, CreationDate, Status, PartnerEmail)
+VALUES (5, 'Store', 'Cloud storage', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Active', 'john.doe@dummy.com');
 
 INSERT INTO PartOf(Email, ProjectID) VALUES ('john.doe@dummy.com', 1);
 INSERT INTO PartOf(Email, ProjectID) VALUES ('james.w@dummy.com', 2);
