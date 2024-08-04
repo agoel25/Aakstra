@@ -115,8 +115,29 @@ public class DatabaseConnectionHandler {
         }
     }
 
+    public boolean isPartnerEmailAvailable(String email) throws SQLException {
+        String query = "SELECT COUNT(*) FROM customer WHERE Email = " + "'" + email + "'";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return false;
+    }
+
     public void insertProject(Project project, String email, String partnerEmail) throws SQLException {
         // TODO: add name unique constraint
+        if (!isPartnerEmailAvailable(partnerEmail)) {
+            logger.error(EXCEPTION_TAG + " Partner email is not available");
+            throw new SQLException("Partner email is not available");
+        }
         String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
             ps.setInt(1, project.getId());
@@ -458,6 +479,10 @@ public class DatabaseConnectionHandler {
             throw new SQLException(e.getMessage());
         }
     }
+
+//    public List<List<String>> selection(String whereQuery) throws SQLException {
+//        String query = "SELECT *"
+//    }
 
     public List<List<String>> projection(String attributes, String relation, Integer numAttributes) throws SQLException {
         String query = "SELECT " + attributes + " FROM " + relation;
