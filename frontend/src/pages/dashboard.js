@@ -126,7 +126,7 @@ export default function Dashboard() {
             projects={projects}
             onProjectClick={() => setIsCreating(true)}
             onViewProject={handleViewProject}
-            onEditProject={handleOpenEditModal} // Pass the edit handler
+            onEditProject={handleOpenEditModal}
           />
         )}
         {currentView === 'billing' && (

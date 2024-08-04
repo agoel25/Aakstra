@@ -457,6 +457,26 @@ public class DatabaseConnectionHandler {
         return results;
     }
 
+    public List<ServiceCounts> countService(String projectID) throws SQLException {
+        String query = "SELECT ServiceDetails.Type, COUNT(*) AS Count FROM ServiceDetails, ProjectUsesService" +
+                       " WHERE ServiceDetails.name = ProjectUsesService.name AND ProjectUsesService.ProjectID = ?" +
+                       " GROUP BY ServiceDetails.Type HAVING COUNT(*) > 1";
+
+        List<ServiceCounts> serviceCounts = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, Integer.parseInt(projectID));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ServiceCounts serviceCount = new ServiceCounts(rs.getString("Type"), rs.getInt("Count"));
+                serviceCounts.add(serviceCount);
+            }
+            logger.info("Got all Counts for project {}", projectID);
+        }
+        return serviceCounts;
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
