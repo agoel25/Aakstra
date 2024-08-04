@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import CreateProjectModal from "../components/CreateProjectModal";
+import EditProjectModal from "../components/EditProjectModal";
 import AddBillingModal from "../components/AddBillingModal";
 import NavItem from "../components/NavItem";
 import HomeContent from "../components/HomeContent";
@@ -18,6 +19,8 @@ export default function Dashboard() {
   const [isAddingBilling, setIsAddingBilling] = useState(false);
   const [newBillingDetail, setNewBillingDetail] = useState({ number: "", cvv: "", expiry: "" });
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const { user, billingDetails, setProjects, projects, addCard, getProjectsByEmail } = useUser();
 
@@ -61,6 +64,21 @@ export default function Dashboard() {
   const handleViewProject = (project) => {
     setSelectedProjectId(project.id);
     setCurrentView('project');
+  };
+
+  const handleEditProject = async () => {
+    try {
+      setIsEditing(false);
+      const userProjects = await getProjectsByEmail(user.email);
+      setProjects(userProjects);
+    } catch (error) {
+      console.error("Failed to edit project:", error);
+    }
+  };
+
+  const handleOpenEditModal = (project) => {
+    setSelectedProject(project);
+    setIsEditing(true);
   };
 
   const defaultProject = user
@@ -108,6 +126,7 @@ export default function Dashboard() {
             projects={projects}
             onProjectClick={() => setIsCreating(true)}
             onViewProject={handleViewProject}
+            onEditProject={handleOpenEditModal} // Pass the edit handler
           />
         )}
         {currentView === 'billing' && (
@@ -125,6 +144,12 @@ export default function Dashboard() {
           newProjectName={newProjectName}
           setNewProjectName={setNewProjectName}
           handleCreateProject={handleCreateProject}
+        />
+        <EditProjectModal
+          isOpen={isEditing}
+          onClose={() => setIsEditing(false)}
+          project={selectedProject}
+          handleEditProject={handleEditProject}
         />
         <AddBillingModal
           isOpen={isAddingBilling}

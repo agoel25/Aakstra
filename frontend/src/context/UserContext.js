@@ -9,8 +9,7 @@ export const UserProvider = ({ children }) => {
   const [services, setServices] = useState(null);
   const [instances, setInstances] = useState(null);
   const [billingDetails, setBillingDetails] = useState([]);
-
-
+  const [customerDetails, setCustomerDetails] = useState([]);
 
   const signup = async (userInfo) => {
     const params = {
@@ -21,9 +20,10 @@ export const UserProvider = ({ children }) => {
       address: userInfo.address,
     };
     try {
-      const response = await axios.post("http://localhost:8080/api/signup", null, { params });
-      setUser({ email: params.email, name: params.name });
-      return response.data;
+      await axios.post("http://localhost:8080/api/signup", null, { params });
+      const response = await getCustomerDetailsByEmail(userInfo.email);
+      setUser(response[0]);
+      return response;
     } catch (error) {
       throw new Error(error.response);
     }
@@ -34,7 +34,8 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await axios.post("http://localhost:8080/api/login", null, { params });
       if (response.status === 200) {
-        setUser({ email, name: "Test User" });
+        const customerDetails = await getCustomerDetailsByEmail(email);
+        setUser(customerDetails[0]);
       }
       return response.data;
     } catch (error) {
@@ -49,11 +50,11 @@ export const UserProvider = ({ children }) => {
       description: projectInfo.description,
       creationDate: "2011-02-27",
       status: "active",
-      partnerEmail: "john.doe@dummy.com",
+      partnerEmail: projectInfo.partnerEmail,
     };
     try {
-      console.log(params);
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
+      return response.data;
     } catch (error) {
       throw new Error(error.response);
     }
@@ -93,10 +94,9 @@ export const UserProvider = ({ children }) => {
       stopDate: instanceInfo.stopDate,
     };
 
-
     try {
       const response = await axios.post("http://localhost:8080/api/addInstance", null, { params });
-      return newInstance;
+      return response.data;
     } catch (error) {
       throw new Error(error.response);
     }
@@ -143,10 +143,47 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getBillingDetailsByEmail = async (email) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/getBillingDetails", { params: { email } });
+      setBillingDetails(response.data);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+  const getCustomerDetailsByEmail = async (email) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/getCustomerDetails", { params: { email } });
+      setCustomerDetails(response.data);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+  const updateProject = async (projectInfo) => {
+    const params = {
+      projectId: projectInfo.projectId,
+      name: projectInfo.name,
+      description: projectInfo.description,
+      creationDate: projectInfo.creationDate,
+      status: projectInfo.status,
+      partnerEmail: projectInfo.partnerEmail,
+    };
+    try {
+      const response = await axios.put("http://localhost:8080/api/updateProject", null, { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject
     }}>
       {children}
     </UserContext.Provider>

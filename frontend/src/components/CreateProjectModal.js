@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { TrashIcon } from '@heroicons/react/24/solid';
 import { useUser } from "@/context/UserContext";
-
 
 const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName, handleCreateProject }) => {
   const [description, setDescription] = useState('');
@@ -10,6 +8,7 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
   const [securityConfigType, setSecurityConfigType] = useState('');
   const [securityConfigName, setSecurityConfigName] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
+  const [partnerEmail, setPartnerEmail] = useState('');
 
   const { user, addProject, addService } = useUser();
 
@@ -41,6 +40,7 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
       email: user.email,
       name: newProjectName,
       description,
+      partnerEmail,
     };
 
     try {
@@ -55,6 +55,7 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
       setDescription('');
       setSecurityConfiguration(null);
       setSelectedServices([]);
+      setPartnerEmail('');
       onClose();
     } catch (error) {
       console.error("Failed to create project:", error);
@@ -77,6 +78,13 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
         placeholder="Enter project description"
         rows={3}
+      />
+      <input
+        type="text"
+        value={partnerEmail}
+        onChange={(e) => setPartnerEmail(e.target.value)}
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
+        placeholder="Enter partner email"
       />
       <button
         onClick={handleCreate}

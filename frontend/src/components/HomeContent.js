@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject }) => (
+const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject, onEditProject }) => (
   <>
     <div className="mb-8">
       <h2 className="text-2xl font-bold mb-2 text-gray-700">Your Services</h2>
@@ -30,6 +30,12 @@ const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject }
               onClick={() => onViewProject(project)}
             >
               View
+            </button>
+            <button
+              className="absolute bottom-4 right-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
+              onClick={() => onEditProject(project)}
+            >
+              Edit
             </button>
           </div>
         ))}

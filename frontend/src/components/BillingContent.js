@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddBillingModal from './AddBillingModal';
 import { useUser } from "@/context/UserContext";
 
-const BillingContent = ({ billingDetails }) => {
+const BillingContent = () => {
   const [isAddingBilling, setIsAddingBilling] = useState(false);
-  const { addCard, user, getProjectsByEmail } = useUser();
+  const [billingDetails, setBillingDetails] = useState([]);
+  const { addCard, user, getBillingDetailsByEmail } = useUser();
+
+  useEffect(() => {
+    const fetchBillingDetails = async () => {
+      if (user && user.email) {
+        try {
+          const userBillingDetails = await getBillingDetailsByEmail(user.email);
+          setBillingDetails(userBillingDetails);
+        } catch (error) {
+          console.error("Failed to fetch billing details:", error);
+        }
+      }
+    };
+
+    fetchBillingDetails();
+  }, [user]);
 
   const handleAddBillingDetail = async (billingDetail) => {
     try {
       await addCard({ ...billingDetail, email: user.email });
       setIsAddingBilling(false);
-      
-      if (user && user.email) {
-        const userBillingDetails = await getBillingDetailsByEmail(user.email);
-        setBillingDetails(userBillingDetails);
-      }
+
+      const userBillingDetails = await getBillingDetailsByEmail(user.email);
+      setBillingDetails(userBillingDetails);
     } catch (error) {
       console.error("Failed to add billing detail:", error);
     }
