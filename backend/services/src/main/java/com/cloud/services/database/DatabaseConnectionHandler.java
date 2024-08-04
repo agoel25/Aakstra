@@ -533,6 +533,24 @@ public class DatabaseConnectionHandler {
         return results;
     }
 
+    public List<InstanceCost> getCostPerInstanceType(String projectID) throws SQLException {
+        String query = "SELECT Type, SUM(TotalCost) FROM Instance WHERE ProjectID = ? GROUP BY Type";
+
+        List<InstanceCost> instanceCosts = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, Integer.parseInt(projectID));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                InstanceCost cost = new InstanceCost(rs.getString("Type"), rs.getInt("TotalCost"));
+                instanceCosts.add(cost);
+            }
+            logger.info("Instance costs per type fetched for project: {}", projectID);
+        }
+        return instanceCosts;
+    }
+
     public List<ServiceCounts> countService(String projectID) throws SQLException {
         String query = "SELECT ServiceDetails.Type, COUNT(*) AS Count FROM ServiceDetails, ProjectUsesService" +
                        " WHERE ServiceDetails.name = ProjectUsesService.name AND ProjectUsesService.ProjectID = ?" +
