@@ -222,4 +222,14 @@ public class MainService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/havingCount")
+    public ResponseEntity<List<ServiceCounts>> havingCount(@RequestParam String projectID) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.countService(projectID), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
