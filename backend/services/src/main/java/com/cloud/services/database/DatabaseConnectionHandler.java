@@ -480,9 +480,32 @@ public class DatabaseConnectionHandler {
         }
     }
 
-//    public List<List<String>> selection(String whereQuery) throws SQLException {
-//        String query = "SELECT *"
-//    }
+    public List<List<String>> selection(String whereQuery) throws SQLException {
+        String query = "SELECT * FROM ServiceDetails WHERE " + whereQuery;
+        logger.info("Got selection query: {}", query);
+
+        List<List<String>> results = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                List<String> tuple = new ArrayList<>();
+
+                for (int i = 1; i <= 5; i++) {
+                    String attributeVal = rs.getString(i);
+                    tuple.add(attributeVal);
+                }
+                results.add(tuple);
+            }
+            logger.info("Got all results for: {}", whereQuery);
+        }  catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return results;
+    }
 
     public List<List<String>> projection(String attributes, String relation, Integer numAttributes) throws SQLException {
         String query = "SELECT " + attributes + " FROM " + relation;
@@ -772,110 +795,110 @@ public class DatabaseConnectionHandler {
                     "FOREIGN KEY (CardNumber) REFERENCES BillingInfo(CardNumber)" +
                     ")");
 
-//            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
-//                    "VALUES ('us-east-1', 'Virginia', 500, 'Active')");
-//
-//            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
-//                    "VALUES ('us-east-2', 'Oregon', 500, 'Active')");
-//
-//            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
-//                    "VALUES ('eu-central-1', 'Frankfurt', 300, 'Active')");
-//
-//            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
-//                    "VALUES ('eu-west-1', 'Ireland', 300, 'Active')");
-//
-//            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
-//                    "VALUES ('sa-east-1', 'Caracas', 200, 'Active')");
-//
-//            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
-//                    "VALUES ('functional.micro', 1, 8, 'Linux', 1)");
-//
-//            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
-//                    "VALUES ('functional.large', 8, 32, 'Linux', 4)");
-//
-//            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
-//                    "VALUES ('compute.large', 8, 64, 'Linux', 16)");
-//
-//            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
-//                    "VALUES ('compute.xlarge', 16, 128, 'Linux', 32)");
-//
-//            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
-//                    "VALUES ('storage.large', 32, 1024, 'Windows', 8)");
-//
-//            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
-//                    "VALUES (101, 'us-east-1', 'functional.micro', 'Active', 1000, '2024-01-04', '2024-07-15')");
-//
-//            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
-//                    "VALUES (102, 'us-east-2', 'functional.large', 'Active', 800, '2024-01-05', '2024-07-16')");
-//
-//            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
-//                    "VALUES (103, 'eu-central-1', 'compute.large', 'Active', 600, '2024-02-01', '2024-07-16')");
-//
-//            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
-//                    "VALUES (104, 'eu-west-1', 'compute.xlarge', 'Active', 1200, '2024-07-11', '2024-07-16')");
-//
-//            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
-//                    "VALUES (105, 'sa-east-1', 'storage.large', 'Inactive', 300, '2024-07-16', '2024-07-16')");
-//
-//            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
-//                    "VALUES ('Serverless', 'PerJob')");
-//
-//            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
-//                    "VALUES ('Authentication', 'PerUser')");
-//
-//            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
-//                    "VALUES ('GPUCompute', 'PerDay')");
-//
-//            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
-//                    "VALUES ('HPC', 'PerDay')");
-//
-//            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
-//                    "VALUES ('Database', 'PerQuery')");
-//
-//            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
-//                    "VALUES ('gamma', 'Serverless', 'Handling serverless functions', 'Active', 1)");
-//
-//            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
-//                    "VALUES ('authIt', 'Authentication', 'Authentication with large capacity', 'Active', 2)");
-//
-//            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
-//                    "VALUES ('GPUb', 'GPUCompute', 'GPU-based rendering service', 'Active', 3)");
-//
-//            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
-//                    "VALUES ('RapidX', 'HPC', 'High performance computing service', 'Active', 4)");
-//
-//            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
-//                    "VALUES ('cSQL', 'Database', 'Cloud SQL database service', 'Active', 5)");
-//
-//            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
-//                    "VALUES (1, 'Migrate', 'Migrating app to cloud', '2024-07-20', 'Active')");
-//
-//            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
-//                    "VALUES (2, 'Analytics', 'Cloud analytics', '2024-07-20', 'Active')");
-//
-//            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
-//                    "VALUES (3, 'OpsPipeline', 'Operations Pipeline', '2024-07-20', 'Active')");
-//
-//            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
-//                    "VALUES (4, 'ModelTraining', 'AI models on cloud GPU', '2024-07-20', 'Active')");
-//
-//            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
-//                    "VALUES (5, 'Store', 'Cloud storage', '2024-07-20', 'Active')");
-//
-//            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
-//                    "VALUES (1, 1)");
-//
-//            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
-//                    "VALUES (2, 2)");
-//
-//            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
-//                    "VALUES (3, 3)");
-//
-//            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
-//                    "VALUES (4, 4)");
-//
-//            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
-//                    "VALUES (5, 5)");
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('us-east-1', 'Virginia', 500, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('us-east-2', 'Oregon', 500, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('eu-central-1', 'Frankfurt', 300, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('eu-west-1', 'Ireland', 300, 'Active')");
+
+            queryList.add("INSERT INTO Region(Name, Location, Capacity, Status)" +
+                    "VALUES ('sa-east-1', 'Caracas', 200, 'Active')");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('functional.micro', 1, 8, 'Linux', 1)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('functional.large', 8, 32, 'Linux', 4)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('compute.large', 8, 64, 'Linux', 16)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('compute.xlarge', 16, 128, 'Linux', 32)");
+
+            queryList.add("INSERT INTO ServerTypeInfo(ServerType, Memory, Storage, OS, CPUCores)" +
+                    "VALUES ('storage.large', 32, 1024, 'Windows', 8)");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (101, 'us-east-1', 'functional.micro', 'Active', 1000, '2024-01-04', '2024-07-15')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (102, 'us-east-2', 'functional.large', 'Active', 800, '2024-01-05', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (103, 'eu-central-1', 'compute.large', 'Active', 600, '2024-02-01', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (104, 'eu-west-1', 'compute.xlarge', 'Active', 1200, '2024-07-11', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServerInfo(ServerID, Name, ServerType, Status, Uptime, CreatedAt, UpdatedAt)" +
+                    "VALUES (105, 'sa-east-1', 'storage.large', 'Inactive', 300, '2024-07-16', '2024-07-16')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('Serverless', 'PerJob')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('Authentication', 'PerUser')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('GPUCompute', 'PerDay')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('HPC', 'PerDay')");
+
+            queryList.add("INSERT INTO ServiceType(Type, CostType)" +
+                    "VALUES ('Database', 'PerQuery')");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('gamma', 'Serverless', 'Handling serverless functions', 'Active', 1)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('authIt', 'Authentication', 'Authentication with large capacity', 'Active', 2)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('GPUb', 'GPUCompute', 'GPU-based rendering service', 'Active', 3)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('RapidX', 'HPC', 'High performance computing service', 'Active', 4)");
+
+            queryList.add("INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)" +
+                    "VALUES ('cSQL', 'Database', 'Cloud SQL database service', 'Active', 5)");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (1, 'Migrate', 'Migrating app to cloud', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (2, 'Analytics', 'Cloud analytics', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (3, 'OpsPipeline', 'Operations Pipeline', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (4, 'ModelTraining', 'AI models on cloud GPU', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO Project(ProjectID, Name, Description, CreationDate, Status)" +
+                    "VALUES (5, 'Store', 'Cloud storage', '2024-07-20', 'Active')");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (1, 1)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (2, 2)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (3, 3)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (4, 4)");
+
+            queryList.add("INSERT INTO ProjectSecurity(SecurityGroupID, ProjectID)" +
+                    "VALUES (5, 5)");
 
             for (String query : queryList) {
                 executeQuery(query);

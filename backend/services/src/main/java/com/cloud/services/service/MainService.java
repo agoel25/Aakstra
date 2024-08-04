@@ -211,6 +211,16 @@ public class MainService {
         }
     }
 
+    @GetMapping("/selection")
+    public ResponseEntity<List<List<String>>> selection(@RequestParam String whereQuery) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.selection(whereQuery), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/projection")
     public ResponseEntity<List<List<String>>> projection(@RequestParam String attributes,
                                                          @RequestParam String relation,
