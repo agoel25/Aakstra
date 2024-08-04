@@ -571,6 +571,29 @@ public class DatabaseConnectionHandler {
         return serviceCounts;
     }
 
+    public String nested(String projectID) throws SQLException {
+        String query =  "SELECT I.Type " +
+                        "FROM Instance I " +
+                        "WHERE I.ProjectID = ? " +
+                        "GROUP BY I.Type " +
+                        "HAVING AVG(I.TotalCost) >= ALL (SELECT AVG(I2.TotalCost) " +
+                                                         "FROM Instance I2 " +
+                                                         "GROUP BY Type)";
+
+        String result = "";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, Integer.parseInt(projectID));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                result = rs.getString("Type");
+                logger.info("Got the instance type with highest average total cost: {}", result);
+            }
+        }
+        return result;
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");

@@ -252,4 +252,15 @@ public class MainService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/getNestedInstanceTypeCost")
+    public ResponseEntity<String> getNestedInstanceTypeCost(@RequestParam String projectID) {
+        try {
+            String result = databaseConnectionHandler.nested(projectID);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
