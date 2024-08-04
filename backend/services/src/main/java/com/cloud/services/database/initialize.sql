@@ -316,6 +316,18 @@ INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
 VALUES ('gigaGPU', 'GPUCompute', 'GPU-based gaming', 'Active', 10);
 INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
 VALUES ('mlGPU', 'GPUCompute', 'GPU-based ML training', 'Active', 9);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('aSQL', 'Database', 'Agile SQL', 'Active', 1);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('bSQL', 'Database', 'Broadcom SQL', 'Active', 1);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('eSQL', 'Database', 'Eth SQL', 'Active', 1);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('RapidZ', 'HPC', 'Better High performance computing service', 'Active', 3);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('beta', 'Serverless', 'Handling serverless functions slower', 'Active', 2);
+INSERT INTO ServiceDetails(Name, Type, Description, Status, CostPerUnit)
+VALUES ('veryFyIt', 'Authentication', 'Even faster authentication', 'Active', 3);
 
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('john.doe@dummy.com', 'gamma');
 INSERT INTO CustomerUsesService (Email, Name) VALUES ('john.doe@dummy.com', 'authIt');
@@ -333,6 +345,12 @@ INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'dSQL');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'veryFy');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'gigaGPU');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'mlGPU');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'aSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'bSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'eSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'RapidZ');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'beta');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (1, 'veryFyIt');
 
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (2, 'RapidX');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (3, 'RapidX');
@@ -348,6 +366,12 @@ INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'dSQL');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'veryFy');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'gigaGPU');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'mlGPU');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'aSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'bSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'eSQL');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'RapidZ');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'beta');
+INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (6, 'veryFyIt');
 
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'gamma');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'authIt');
@@ -360,12 +384,22 @@ INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (7, 'mlGPU');
 INSERT INTO ProjectUsesService(ProjectID, Name) VALUES (8, 'RapidX');
 
 INSERT INTO Storage(Name, Capacity, Latency) VALUES ('cSQL', 300, 7);
+INSERT INTO Storage(Name, Capacity, Latency) VALUES ('dSQL', 200, 9);
+INSERT INTO Storage(Name, Capacity, Latency) VALUES ('aSQL', 100, 7);
+INSERT INTO Storage(Name, Capacity, Latency) VALUES ('bSQL', 200, 7);
+INSERT INTO Storage(Name, Capacity, Latency) VALUES ('eSQL', 500, 7);
 
 INSERT INTO Compute(Name, CPUCores, MaxMemory) VALUES ('GPUb', 32, 128);
+INSERT INTO Compute(Name, CPUCores, MaxMemory) VALUES ('gigaGPU', 8, 128);
+INSERT INTO Compute(Name, CPUCores, MaxMemory) VALUES ('mlGPU', 32, 1024);
 INSERT INTO Compute(Name, CPUCores, MaxMemory) VALUES ('RapidX', 16, 64);
+INSERT INTO Compute(Name, CPUCores, MaxMemory) VALUES ('RapidZ', 16, 64);
 
 INSERT INTO Functional(Name, Timeout, ConcurrencyLimit) VALUES ('gamma', 300, 10);
 INSERT INTO Functional(Name, Timeout, ConcurrencyLimit) VALUES ('authIt', 200, 20);
+INSERT INTO Functional(Name, Timeout, ConcurrencyLimit) VALUES ('veryFy', 200, 40);
+INSERT INTO Functional(Name, Timeout, ConcurrencyLimit) VALUES ('veryFyIt', 200, 40);
+INSERT INTO Functional(Name, Timeout, ConcurrencyLimit) VALUES ('beta', 200, 70);
 
 INSERT INTO Region(Name, Location, Capacity, Status)
 VALUES ('us-east-1', 'Virginia', 500, 'Active');
