@@ -253,6 +253,16 @@ public class MainService {
         }
     }
 
+    @GetMapping("/division")
+    public ResponseEntity<List<String>> division(@RequestParam String email) {
+        try {
+            return new ResponseEntity<>(databaseConnectionHandler.division(email), HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/getNestedInstanceTypeCost")
     public ResponseEntity<String> getNestedInstanceTypeCost(@RequestParam String projectID) {
         try {

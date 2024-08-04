@@ -594,6 +594,29 @@ public class DatabaseConnectionHandler {
         return result;
     }
 
+    public List<String> division(String email) throws SQLException {
+        String query = "SELECT Project.Name FROM Project" +
+                " WHERE NOT EXISTS(" +
+                "(SELECT ServiceDetails.Name FROM ServiceDetails)" +
+                "MINUS (SELECT ProjectUsesService.Name FROM ProjectUsesService WHERE ProjectUsesService.ProjectID = Project.ProjectID)" +
+                ")" +
+                " AND Project.ProjectID IN (SELECT PartOf.ProjectID FROM PartOf WHERE PartOf.email = ?)";
+
+        List<String> projectNames = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String projectName = rs.getString("Name");
+                projectNames.add(projectName);
+            }
+            logger.info("Got all Projects with all service for customer {}", email);
+        }
+        return projectNames;
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
