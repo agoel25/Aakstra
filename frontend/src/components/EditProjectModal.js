@@ -71,13 +71,6 @@ const EditProjectModal = ({ isOpen, onClose, project, handleEditProject }) => {
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
         placeholder="Enter status"
       />
-      <input
-        type="text"
-        value={creationDate}
-        onChange={(e) => setCreationDate(e.target.value)}
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-        placeholder="Enter creation date"
-      />
       <button
         onClick={handleUpdate}
         className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
