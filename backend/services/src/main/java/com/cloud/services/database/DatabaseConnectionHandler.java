@@ -205,7 +205,7 @@ public class DatabaseConnectionHandler {
     public List<ServiceDetails> getAllServices(String projectID) throws SQLException {
         String query = "SELECT ServiceDetails.Name, ServiceDetails.Description, ServiceDetails.Status, ServiceDetails.CostPerUnit, ServiceType.Type, ServiceType.CostType " +
                 "FROM ProjectUsesService, ServiceDetails, ServiceType " +
-                "WHERE ProjectUsesService.Name = PartOf.ProjectID AND ServiceDetails.Type = ServiceType.Type AND ProjectUsesService.ProjectID = ?";
+                "WHERE ProjectUsesService.Name = ServiceDetails.Name AND ServiceDetails.Type = ServiceType.Type AND ProjectUsesService.ProjectID = ?";
 
         List<ServiceDetails> allServices = new ArrayList<>();
 
@@ -429,6 +429,32 @@ public class DatabaseConnectionHandler {
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());
             throw new SQLException(e.getMessage());
         }
+    }
+
+    public List<List<String>> projection(String attributes, String relation, Integer numAttributes) throws SQLException {
+        String query = "SELECT " + attributes + " FROM " + relation;
+
+        List<List<String>> results = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                List<String> tuple = new ArrayList<>();
+
+                for (int i = 1; i <= numAttributes; i++) {
+                    String attributeVal = rs.getString(i);
+                    tuple.add(attributeVal);
+                }
+                results.add(tuple);
+            }
+            logger.info("Got all Results {}", relation);
+        }  catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return results;
     }
 
     public void insertAllData() {
