@@ -190,10 +190,20 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const selection = async (table, whereClause) => {
+    const params = { whereQuery: whereClause };
+    try {
+      const response = await axios.get("http://localhost:8080/api/selection", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection
     }}>
       {children}
     </UserContext.Provider>

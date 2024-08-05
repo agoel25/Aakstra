@@ -7,10 +7,12 @@ import NavItem from "../components/NavItem";
 import HomeContent from "../components/HomeContent";
 import BillingContent from "../components/BillingContent";
 import ProjectContent from "../components/ProjectContent";
+import ServiceExplorerContent from "../components/ServiceExplorerContent";
 import {
   HomeIcon,
   CreditCardIcon,
   UserCircleIcon,
+  ServerIcon,
 } from "@heroicons/react/24/solid";
 import { useUser } from "@/context/UserContext";
 import AdminContent from "@/components/AdminContent";
@@ -135,6 +137,12 @@ export default function Dashboard() {
               onClick={() => setCurrentView("admin")}
               isActive={currentView === "admin"}
             />
+            <NavItem
+              icon={ServerIcon}
+              label="Service Explorer"
+              onClick={() => setCurrentView("serviceexplorer")}
+              isActive={currentView === "serviceexplorer"}
+            />
           </ul>
         </nav>
       </aside>
@@ -164,6 +172,7 @@ export default function Dashboard() {
         {currentView === "project" && selectedProjectId && (
           <ProjectContent projectID={selectedProjectId} projects={projects} />
         )}
+        {currentView === "serviceexplorer" && <ServiceExplorerContent />}
         <CreateProjectModal
           isOpen={isCreating}
           onClose={() => setIsCreating(false)}
