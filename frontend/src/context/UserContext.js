@@ -168,7 +168,7 @@ export const UserProvider = ({ children }) => {
       projectId: projectInfo.projectId,
       name: projectInfo.name,
       description: projectInfo.description,
-      creationDate: projectInfo.creationDate,
+      creationDate: projectInfo.creationDate.substring(0, 10),
       status: projectInfo.status,
       partnerEmail: projectInfo.partnerEmail,
     };
