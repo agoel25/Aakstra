@@ -18,10 +18,43 @@ export default function Signup() {
   const router = useRouter();
 
   const validateUserInfo = () => {
-    if (!userInfo.name || !userInfo.phoneNumber || !userInfo.email || !userInfo.address || !userInfo.password) {
+    const { name, phoneNumber, email, address, password } = userInfo;
+
+    if (!name || !phoneNumber || !email || !address || !password) {
       alert("Please fill in all the fields.");
       return false;
     }
+
+    if (!/^\d+$/.test(phoneNumber)) {
+      alert("Please enter a valid phone number (numbers only).");
+      return false;
+    }
+
+    if (!email.includes("@") || email.length > 50 || email.length < 5) {
+      alert("Please enter a valid email address.");
+      return false;
+    }
+
+    if (name.length > 50) {
+      alert("Name should not exceed 50 characters.");
+      return false;
+    }
+
+    if (phoneNumber.length > 15) {
+      alert("Phone number should not exceed 15 digits.");
+      return false;
+    }
+
+    if (address.length > 100) {
+      alert("Address should not exceed 100 characters.");
+      return false;
+    }
+
+    if (password.length > 50) {
+      alert("Password should not exceed 50 characters.");
+      return false;
+    }
+
     return true;
   };
 
@@ -63,6 +96,7 @@ export default function Signup() {
                 name="name"
                 value={userInfo.name}
                 onChange={handleChange}
+                maxLength="50"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your name"
               />
@@ -77,6 +111,7 @@ export default function Signup() {
                 name="phoneNumber"
                 value={userInfo.phoneNumber}
                 onChange={handleChange}
+                maxLength="15"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your phone number"
               />
@@ -91,6 +126,7 @@ export default function Signup() {
                 name="email"
                 value={userInfo.email}
                 onChange={handleChange}
+                maxLength="50"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your email"
               />
@@ -105,6 +141,7 @@ export default function Signup() {
                 name="address"
                 value={userInfo.address}
                 onChange={handleChange}
+                maxLength="100"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your address"
               />
@@ -119,6 +156,7 @@ export default function Signup() {
                 name="password"
                 value={userInfo.password}
                 onChange={handleChange}
+                maxLength="50"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your password"
               />

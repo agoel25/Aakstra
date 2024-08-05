@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Inter } from "next/font/google";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/router";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -10,14 +11,35 @@ export default function Home() {
   const { login } = useUser();
   const router = useRouter();
 
+  const validateInputs = () => {
+    if (!email || !password) {
+      alert("Please fill in all the fields.");
+      return false;
+    }
+
+    if (!email.includes("@") || email.length > 50 || email.length < 5) {
+      alert("Please enter a valid email address.");
+      return false;
+    }
+
+    if (password.length > 50) {
+      alert("Password should not exceed 50 characters.");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      await login(email, password);
-      alert("Login successful");
-      router.push("/dashboard");
-    } catch (error) {
-      alert("Login failed");
+    if (validateInputs()) {
+      try {
+        await login(email, password);
+        alert("Login successful");
+        router.push("/dashboard");
+      } catch (error) {
+        alert("Login failed");
+      }
     }
   };
 
@@ -43,6 +65,7 @@ export default function Home() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                maxLength="50"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your email"
               />
@@ -59,6 +82,7 @@ export default function Home() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                maxLength="50"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter your password"
               />
