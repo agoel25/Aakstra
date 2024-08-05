@@ -83,7 +83,6 @@ export const UserProvider = ({ children }) => {
   const [projects, setProjects] = useState(null);
   const [services, setServices] = useState(null);
   const [instances, setInstances] = useState(null);
-  const [billingDetails, setBillingDetails] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
 
   const signup = async (userInfo) => {
@@ -127,8 +126,7 @@ export const UserProvider = ({ children }) => {
   const addProject = async (projectInfo) => {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0];
-    const creationDateString = `creationDate: "${formattedDate}"`;
-
+    const creationDateString = `"${formattedDate}"`;
     const params = sanitizeSQL({
       email: projectInfo.email,
       name: projectInfo.name,
@@ -144,33 +142,6 @@ export const UserProvider = ({ children }) => {
         { params }
       );
       return response.data;
-    } catch (error) {
-      alert(error.response.data);
-      throw new Error(error.response.data);
-    }
-  };
-
-  const addCard = async (billingInfo) => {
-    const params = sanitizeSQL({
-      cardNumber: billingInfo.cardNumber,
-      email: billingInfo.email,
-      cvv: billingInfo.cvv,
-      postalCode: billingInfo.postalCode,
-      city: billingInfo.city,
-      country: billingInfo.country,
-      expiryDate: billingInfo.expiryDate,
-      paymentType: billingInfo.paymentType,
-      isDefault: billingInfo.isDefault,
-    });
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/addCard",
-        null,
-        { params }
-      );
-      const newBilling = { ...params, id: response.data.id };
-      setBillingDetails([...billingDetails, newBilling]);
-      return newBilling;
     } catch (error) {
       alert(error.response.data);
       throw new Error(error.response.data);
@@ -257,21 +228,6 @@ export const UserProvider = ({ children }) => {
         "http://localhost:8080/api/getInstances",
         { params }
       );
-      return response.data;
-    } catch (error) {
-      alert(error.response.data);
-      throw new Error(error.response.data);
-    }
-  };
-
-  const getBillingDetailsByEmail = async (email) => {
-    const params = sanitizeSQL({ email });
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/api/getBillingDetails",
-        { params }
-      );
-      setBillingDetails(response.data);
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -419,11 +375,9 @@ export const UserProvider = ({ children }) => {
         projects,
         services,
         instances,
-        billingDetails,
         getProjectsByEmail,
         getServicesByProjectID,
         getInstancesByServiceID,
-        getBillingDetailsByEmail,
         getCustomerDetailsByEmail,
         updateProject,
         projection,
