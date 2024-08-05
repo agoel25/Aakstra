@@ -5,7 +5,7 @@ const UserContext = createContext();
 
 const sqlKeywords = [
   "SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "TRUNCATE", "ALTER", "CREATE", 
-  "REPLACE", "EXECUTE", "EXEC", "--", "*", "GRANT", "REVOKE", "DENY", "MERGE",
+  "REPLACE", "EXECUTE", "EXEC", "--", "*", ";", "GRANT", "REVOKE", "DENY", "MERGE",
   "COMMENT", "ANALYZE", "COMMIT", "ROLLBACK", "SAVEPOINT", "LOCK", "UNLOCK",
   "SET", "SHOW", "USE", "DESCRIBE", "EXPLAIN", "FLUSH", "KILL", "LOAD",
   "OPTIMIZE", "PURGE", "RENAME", "REPAIR", "RESET", "SHUTDOWN", "START",
