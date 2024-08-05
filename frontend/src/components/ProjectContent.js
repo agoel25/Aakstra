@@ -23,8 +23,6 @@ const ProjectContent = ({ projectID }) => {
     getInstancesByServiceID,
     getCostPerInstanceType,
     havingCount,
-    division,
-    getNestedInstanceTypeCost
   } = useUser();
 
   const project = projects?.find((p) => p.id === projectID);

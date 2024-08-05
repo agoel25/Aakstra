@@ -231,7 +231,7 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, division, getNestedInstanceTypeCost, deleteProject
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, deleteProject
     }}>
       {children}
     </UserContext.Provider>
