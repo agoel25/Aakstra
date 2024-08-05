@@ -137,12 +137,6 @@ export default function Dashboard() {
               isActive={currentView === "home" || currentView === "project"}
             />
             <NavItem
-              icon={CreditCardIcon}
-              label="Billing"
-              onClick={() => setCurrentView("billing")}
-              isActive={currentView === "billing"}
-            />
-            <NavItem
               icon={UserCircleIcon}
               label="Admin"
               onClick={() => setCurrentView("admin")}
