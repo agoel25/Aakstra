@@ -4,32 +4,70 @@ import axios from "axios";
 const UserContext = createContext();
 
 const sqlKeywords = [
-  "SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "TRUNCATE", "ALTER", "CREATE", 
-  "REPLACE", "EXECUTE", "EXEC", "--", "*", ";", "GRANT", "REVOKE", "DENY", "MERGE",
-  "COMMENT", "ANALYZE", "COMMIT", "ROLLBACK", "SAVEPOINT", "LOCK", "UNLOCK",
-  "SET", "SHOW", "USE", "DESCRIBE", "EXPLAIN", "FLUSH", "KILL", "LOAD",
-  "OPTIMIZE", "PURGE", "RENAME", "REPAIR", "RESET", "SHUTDOWN", "START",
-  "STOP", "CALL", "ALTER SESSION", "ALTER SYSTEM"
+  "SELECT",
+  "INSERT",
+  "UPDATE",
+  "DELETE",
+  "DROP",
+  "TRUNCATE",
+  "ALTER",
+  "CREATE",
+  "REPLACE",
+  "EXECUTE",
+  "EXEC",
+  "--",
+  "*",
+  ";",
+  "GRANT",
+  "REVOKE",
+  "DENY",
+  "MERGE",
+  "COMMENT",
+  "ANALYZE",
+  "COMMIT",
+  "ROLLBACK",
+  "SAVEPOINT",
+  "LOCK",
+  "UNLOCK",
+  "SET",
+  "SHOW",
+  "USE",
+  "DESCRIBE",
+  "EXPLAIN",
+  "FLUSH",
+  "KILL",
+  "LOAD",
+  "OPTIMIZE",
+  "PURGE",
+  "RENAME",
+  "REPAIR",
+  "RESET",
+  "SHUTDOWN",
+  "START",
+  "STOP",
+  "CALL",
+  "ALTER SESSION",
+  "ALTER SYSTEM",
 ];
 
 const sanitizeSQL = (param) => {
   const isSQLInjection = (value) => {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       const upperValue = value.toUpperCase();
-      return sqlKeywords.some(keyword => upperValue.includes(keyword));
+      return sqlKeywords.some((keyword) => upperValue.includes(keyword));
     }
     return false;
   };
 
-  if (typeof param === 'string') {
+  if (typeof param === "string") {
     if (isSQLInjection(param)) {
-      alert('Potential SQL Injection detected')
-      throw new Error('Potential SQL Injection detected');
+      alert("Potential SQL Injection detected");
+      throw new Error("Potential SQL Injection detected");
     }
     return param;
   }
 
-  if (typeof param === 'object' && param !== null) {
+  if (typeof param === "object" && param !== null) {
     const sanitizedObj = {};
     for (const key in param) {
       sanitizedObj[key] = sanitizeSQL(param[key]);
@@ -70,7 +108,11 @@ export const UserProvider = ({ children }) => {
   const login = async (email, password) => {
     const params = sanitizeSQL({ email, password });
     try {
-      const response = await axios.post("http://localhost:8080/api/login", null, { params });
+      const response = await axios.post(
+        "http://localhost:8080/api/login",
+        null,
+        { params }
+      );
       if (response.status === 200) {
         const customerDetails = await getCustomerDetailsByEmail(email);
         setUser(customerDetails[0]);
@@ -83,16 +125,24 @@ export const UserProvider = ({ children }) => {
   };
 
   const addProject = async (projectInfo) => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split("T")[0];
+    const creationDateString = `creationDate: "${formattedDate}"`;
+
     const params = sanitizeSQL({
       email: projectInfo.email,
       name: projectInfo.name,
       description: projectInfo.description,
-      creationDate: "2011-02-27",
+      creationDate: creationDateString,
       status: "active",
       partnerEmail: projectInfo.partnerEmail,
     });
     try {
-      const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
+      const response = await axios.post(
+        "http://localhost:8080/api/addProject",
+        null,
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -113,7 +163,11 @@ export const UserProvider = ({ children }) => {
       isDefault: billingInfo.isDefault,
     });
     try {
-      const response = await axios.post("http://localhost:8080/api/addCard", null, { params });
+      const response = await axios.post(
+        "http://localhost:8080/api/addCard",
+        null,
+        { params }
+      );
       const newBilling = { ...params, id: response.data.id };
       setBillingDetails([...billingDetails, newBilling]);
       return newBilling;
@@ -136,7 +190,11 @@ export const UserProvider = ({ children }) => {
     });
 
     try {
-      const response = await axios.post("http://localhost:8080/api/addInstance", null, { params });
+      const response = await axios.post(
+        "http://localhost:8080/api/addInstance",
+        null,
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -145,9 +203,16 @@ export const UserProvider = ({ children }) => {
   };
 
   const addService = async (serviceInfo) => {
-    const params = sanitizeSQL({ projectID: serviceInfo.projectID, name: serviceInfo.name });
+    const params = sanitizeSQL({
+      projectID: serviceInfo.projectID,
+      name: serviceInfo.name,
+    });
     try {
-      const response = await axios.post("http://localhost:8080/api/addProjectService", null, { params });
+      const response = await axios.post(
+        "http://localhost:8080/api/addProjectService",
+        null,
+        { params }
+      );
       const newService = { ...params, id: response.data.id };
       setServices([...services, newService]);
       return newService;
@@ -160,7 +225,10 @@ export const UserProvider = ({ children }) => {
   const getProjectsByEmail = async (email) => {
     const params = sanitizeSQL({ email });
     try {
-      const response = await axios.get("http://localhost:8080/api/getProjects", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/getProjects",
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -171,7 +239,10 @@ export const UserProvider = ({ children }) => {
   const getServicesByProjectID = async (projectID) => {
     const params = sanitizeSQL({ projectID: projectID });
     try {
-      const response = await axios.get("http://localhost:8080/api/getServices", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/getServices",
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -182,7 +253,10 @@ export const UserProvider = ({ children }) => {
   const getInstancesByServiceID = async (projectID, serviceName) => {
     const params = sanitizeSQL({ projectID, name: serviceName });
     try {
-      const response = await axios.get("http://localhost:8080/api/getInstances", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/getInstances",
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -193,7 +267,10 @@ export const UserProvider = ({ children }) => {
   const getBillingDetailsByEmail = async (email) => {
     const params = sanitizeSQL({ email });
     try {
-      const response = await axios.get("http://localhost:8080/api/getBillingDetails", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/getBillingDetails",
+        { params }
+      );
       setBillingDetails(response.data);
       return response.data;
     } catch (error) {
@@ -205,7 +282,10 @@ export const UserProvider = ({ children }) => {
   const getCustomerDetailsByEmail = async (email) => {
     const params = sanitizeSQL({ email });
     try {
-      const response = await axios.get("http://localhost:8080/api/getCustomerDetails", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/getCustomerDetails",
+        { params }
+      );
       setCustomerDetails(response.data);
       return response.data;
     } catch (error) {
@@ -225,7 +305,11 @@ export const UserProvider = ({ children }) => {
       oldName: projectInfo.oldName,
     });
     try {
-      const response = await axios.put("http://localhost:8080/api/updateProject", null, { params });
+      const response = await axios.put(
+        "http://localhost:8080/api/updateProject",
+        null,
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -236,7 +320,9 @@ export const UserProvider = ({ children }) => {
   const projection = async (attributes, relation, numAttributes) => {
     const params = { attributes, relation, numAttributes };
     try {
-      const response = await axios.get("http://localhost:8080/api/projection", { params });
+      const response = await axios.get("http://localhost:8080/api/projection", {
+        params,
+      });
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -247,7 +333,9 @@ export const UserProvider = ({ children }) => {
   const selection = async (table, whereClause) => {
     const params = { whereQuery: whereClause };
     try {
-      const response = await axios.get("http://localhost:8080/api/selection", { params });
+      const response = await axios.get("http://localhost:8080/api/selection", {
+        params,
+      });
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -258,7 +346,10 @@ export const UserProvider = ({ children }) => {
   const getCostPerInstanceType = async (projectID) => {
     const params = sanitizeSQL({ projectID });
     try {
-      const response = await axios.get("http://localhost:8080/api/getCostPerInstanceType", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/getCostPerInstanceType",
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -269,7 +360,10 @@ export const UserProvider = ({ children }) => {
   const havingCount = async (projectID) => {
     const params = sanitizeSQL({ projectID });
     try {
-      const response = await axios.get("http://localhost:8080/api/havingCount", { params });
+      const response = await axios.get(
+        "http://localhost:8080/api/havingCount",
+        { params }
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -289,29 +383,58 @@ export const UserProvider = ({ children }) => {
 
   const division = async (email) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/division", { params: { email } });
+      const response = await axios.get("http://localhost:8080/api/division", {
+        params: { email },
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response);
     }
   };
-
 
   const getNestedInstanceTypeCost = async (projectID) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/getNestedInstanceTypeCost", { params: { projectID } });
+      const response = await axios.get(
+        "http://localhost:8080/api/getNestedInstanceTypeCost",
+        { params: { projectID } }
+      );
       return response.data;
     } catch (error) {
       throw new Error(error.response);
     }
   };
 
-
   return (
-    <UserContext.Provider value={{
-      user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, deleteProject, division, getNestedInstanceTypeCost
-    }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        signup,
+        login,
+        addProject,
+        addCard,
+        addInstance,
+        addService,
+        setProjects,
+        projects,
+        services,
+        instances,
+        billingDetails,
+        getProjectsByEmail,
+        getServicesByProjectID,
+        getInstancesByServiceID,
+        getBillingDetailsByEmail,
+        getCustomerDetailsByEmail,
+        updateProject,
+        projection,
+        selection,
+        getCostPerInstanceType,
+        havingCount,
+        deleteProject,
+        division,
+        getNestedInstanceTypeCost,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
