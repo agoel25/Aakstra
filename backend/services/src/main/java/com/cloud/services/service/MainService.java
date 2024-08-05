@@ -34,6 +34,12 @@ public class MainService {
             databaseConnectionHandler.insertCustomer(customer);
             return new ResponseEntity<>("Customer created successfully", HttpStatus.OK);
         } catch (SQLException e) {
+            if (e.getMessage().contains("Customer with this email already exists")) {
+                return new ResponseEntity<>("Customer with this email already exists" , HttpStatus.CONFLICT);
+            }
+            if (e.getMessage().contains("Customer with this phone number already exists")) {
+                return new ResponseEntity<>("Customer with this phone number already exists" , HttpStatus.CONFLICT);
+            }
             return new ResponseEntity<>("Failed to create customer: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

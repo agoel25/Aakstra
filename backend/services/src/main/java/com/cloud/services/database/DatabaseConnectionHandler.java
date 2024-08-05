@@ -277,8 +277,50 @@ public class DatabaseConnectionHandler {
         return allServices;
     }
 
+    private boolean isCustomerPhoneNumberUnique(Customer customer) throws SQLException {
+        String query = "SELECT COUNT(*) FROM customer WHERE PhoneNumber = " + "'" + customer.getPhoneNumber() + "'";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return true;
+    }
+
+    private boolean isCustomerEmailUnique(Customer customer) throws SQLException {
+        String query = "SELECT COUNT(*) FROM customer WHERE PhoneNumber = " + "'" + customer.getEmail() + "'";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return true;
+    }
+
     // Customer methods
     public void insertCustomer(Customer customer) throws SQLException {
+        if(!isCustomerPhoneNumberUnique(customer)) {
+            logger.error(EXCEPTION_TAG + " Customer with this phone number already exists");
+            throw new SQLException("Customer with this phone number already exists");
+        }
+        if (!isCustomerEmailUnique(customer)) {
+            logger.error(EXCEPTION_TAG + " Customer with this email already exists");
+            throw new SQLException("Customer with this email already exists");
+        }
         String query = "INSERT INTO customer VALUES (?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, customer.getEmail());
@@ -286,7 +328,6 @@ public class DatabaseConnectionHandler {
             ps.setString(3, customer.getPhoneNumber());
             ps.setString(4, customer.getPassword());
             ps.setString(5, customer.getAddress());
-            // TODO: unique constraint on phone number
             ps.execute();
             connection.commit();
             logger.info("Inserted customer {}", customer.getEmail());
