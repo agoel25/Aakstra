@@ -207,10 +207,11 @@ public class MainService {
                                                 @RequestParam String description,
                                                 @RequestParam String creationDate,
                                                 @RequestParam String status,
-                                                @RequestParam String partnerEmail) {
+                                                @RequestParam String partnerEmail,
+                                                @RequestParam String oldName) {
         try {
             Project project = new Project(projectId, name, description, creationDate, status, partnerEmail);
-            databaseConnectionHandler.updateProject(project);
+            databaseConnectionHandler.updateProject(project, oldName);
             return new ResponseEntity<>("Project updated successfully", HttpStatus.OK);
         } catch (SQLException e) {
             if (e.getMessage().contains("Project name is not unique")) {

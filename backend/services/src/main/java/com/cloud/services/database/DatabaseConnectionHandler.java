@@ -89,10 +89,12 @@ public class DatabaseConnectionHandler {
         return true;
     }
 
-    public void updateProject(Project project) throws SQLException {
-        if (!isProjectNameUnique(project.getName())) {
-            logger.error(EXCEPTION_TAG + "Project name is not unique");
-            throw new SQLException("Project name is not unique");
+    public void updateProject(Project project, String oldName) throws SQLException {
+        if (isProjectNameUnique(project.getName())) {
+            if (!oldName.equals(project.getName())) {
+                logger.error(EXCEPTION_TAG + "Project name is not unique");
+                throw new SQLException("Project name is not unique");
+            }
         } else {
             String updateQuery = "UPDATE project SET Name = ?, Description = ?, CreationDate = ?, Status = ? WHERE ProjectID = ?";
             try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
