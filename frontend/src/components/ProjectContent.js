@@ -345,7 +345,7 @@ const ProjectContent = ({ projectID }) => {
             Get Instance Type With Maximum Average Cost
           </button>
           {nestedInstanceTypeCostFetched && !nestedInstanceTypeCost && (
-            <p>No nested instance type cost data found.</p>
+            <p>No instances found for the project</p>
           )}
           {nestedInstanceTypeCost && (
             <div className="bg-white p-4 border border-gray-300 rounded-lg mb-4">
