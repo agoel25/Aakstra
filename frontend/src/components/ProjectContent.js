@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import CreateInstanceModal from "./CreateInstanceModal";
 import { useUser } from "@/context/UserContext";
 
-const cloudServices = ["gamma", "authIt", "GPUb", "RapidX", "cSQL"];
+const cloudServices = [
+  "gamma", "authIt", "GPUb", "RapidX", "cSQL", 
+  "dSQL", "veryFy", "gigaGPU", "mlGPU", "aSQL", 
+  "bSQL", "eSQL", "RapidZ", "beta", "veryFyIt"
+];
 
 const ProjectContent = ({ projectID }) => {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
@@ -15,6 +19,11 @@ const ProjectContent = ({ projectID }) => {
   const [projectsUsingAllServices, setProjectsUsingAllServices] = useState([]);
   const [nestedInstanceTypeCost, setNestedInstanceTypeCost] = useState("");
 
+  const [costFetched, setCostFetched] = useState(false);
+  const [serviceCountsFetched, setServiceCountsFetched] = useState(false);
+  const [projectsUsingAllServicesFetched, setProjectsUsingAllServicesFetched] = useState(false);
+  const [nestedInstanceTypeCostFetched, setNestedInstanceTypeCostFetched] = useState(false);
+
   const {
     projects,
     addInstance,
@@ -23,6 +32,8 @@ const ProjectContent = ({ projectID }) => {
     getInstancesByServiceID,
     getCostPerInstanceType,
     havingCount,
+    division,
+    getNestedInstanceTypeCost,
   } = useUser();
 
   const project = projects?.find((p) => p.id === projectID);
@@ -93,6 +104,7 @@ const ProjectContent = ({ projectID }) => {
   };
 
   const handleFetchCostPerInstanceType = async () => {
+    setCostFetched(true);
     try {
       const result = await getCostPerInstanceType(projectID);
       setCostPerInstanceType(result);
@@ -102,12 +114,32 @@ const ProjectContent = ({ projectID }) => {
   };
 
   const handleFetchServiceCounts = async () => {
+    setServiceCountsFetched(true);
     try {
       const result = await havingCount(projectID);
-      console.log(result);
       setServiceCounts(result);
     } catch (error) {
       console.error("Failed to fetch service counts:", error);
+    }
+  };
+
+  const handleFetchProjectsUsingAllServices = async () => {
+    setProjectsUsingAllServicesFetched(true);
+    try {
+      const result = await division(projectID);
+      setProjectsUsingAllServices(result);
+    } catch (error) {
+      console.error("Failed to fetch projects using all services:", error);
+    }
+  };
+
+  const handleFetchNestedInstanceTypeCost = async () => {
+    setNestedInstanceTypeCostFetched(true);
+    try {
+      const result = await getNestedInstanceTypeCost(projectID);
+      setNestedInstanceTypeCost(result);
+    } catch (error) {
+      console.error("Failed to fetch nested instance type cost:", error);
     }
   };
 
@@ -222,7 +254,10 @@ const ProjectContent = ({ projectID }) => {
           >
             Get Cost Per Instance Type
           </button>
-          {costPerInstanceType.length > 0 ? (
+          {costFetched && costPerInstanceType.length === 0 && (
+            <p>No cost data found for instance types.</p>
+          )}
+          {costPerInstanceType.length > 0 && (
             <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
               <thead>
                 <tr>
@@ -239,8 +274,6 @@ const ProjectContent = ({ projectID }) => {
                 ))}
               </tbody>
             </table>
-          ) : (
-            <p>No cost data found for instance types.</p>
           )}
         </div>
         <div>
@@ -250,7 +283,10 @@ const ProjectContent = ({ projectID }) => {
           >
             Get Duplicate Service Counts
           </button>
-          {serviceCounts.length > 0 ? (
+          {serviceCountsFetched && serviceCounts.length === 0 && (
+            <p>No duplicate service counts found.</p>
+          )}
+          {serviceCounts.length > 0 && (
             <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
               <thead>
                 <tr>
@@ -267,8 +303,49 @@ const ProjectContent = ({ projectID }) => {
                 ))}
               </tbody>
             </table>
-          ) : (
-            <p>No duplicate service counts found.</p>
+          )}
+        </div>
+        <div>
+          <button
+            className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+            onClick={handleFetchProjectsUsingAllServices}
+          >
+            Get Projects Using All Services
+          </button>
+          {projectsUsingAllServicesFetched && projectsUsingAllServices.length === 0 && (
+            <p>No projects using all services found.</p>
+          )}
+          {projectsUsingAllServices.length > 0 && (
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Project</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projectsUsingAllServices.map((project, index) => (
+                  <tr key={index}>
+                    <td className="py-2 px-4 border-b">{project}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        <div>
+          <button
+            className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+            onClick={handleFetchNestedInstanceTypeCost}
+          >
+            Get Nested Instance Type Cost
+          </button>
+          {nestedInstanceTypeCostFetched && !nestedInstanceTypeCost && (
+            <p>No nested instance type cost data found.</p>
+          )}
+          {nestedInstanceTypeCost && (
+            <div className="bg-white p-4 border border-gray-300 rounded-lg mb-4">
+              {nestedInstanceTypeCost}
+            </div>
           )}
         </div>
       </div>

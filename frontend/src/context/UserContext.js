@@ -282,10 +282,30 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const division = async (email) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/division", { params: { email } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+
+  const getNestedInstanceTypeCost = async (projectID) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/getNestedInstanceTypeCost", { params: { projectID } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, deleteProject
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, deleteProject, division, getNestedInstanceTypeCost
     }}>
       {children}
     </UserContext.Provider>
