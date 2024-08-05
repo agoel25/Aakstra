@@ -58,7 +58,7 @@ public class DatabaseConnectionHandler {
 
     // Project methods
     public Integer getNextProjectID() throws SQLException {
-        String query = "SELECT COUNT(*) FROM project";
+        String query = "SELECT MAX(projectID) FROM project";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -90,30 +90,29 @@ public class DatabaseConnectionHandler {
     }
 
     public void updateProject(Project project, String oldName) throws SQLException {
-        if (isProjectNameUnique(project.getName())) {
+        if (!isProjectNameUnique(project.getName())) {
             if (!oldName.equals(project.getName())) {
                 logger.error(EXCEPTION_TAG + "Project name is not unique");
                 throw new SQLException("Project name is not unique");
             }
-        } else {
-            String updateQuery = "UPDATE project SET Name = ?, Description = ?, CreationDate = ?, Status = ? WHERE ProjectID = ?";
-            try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
-                ps.setString(1, project.getName());
-                ps.setString(2, project.getDescription());
-                ps.setDate(3, java.sql.Date.valueOf(project.getCreationDate()));
-                ps.setString(4, project.getStatus());
-                ps.setInt(5, project.getId());
-                int rowCount = ps.executeUpdate();
-                if (rowCount == 0) {
-                    throw new SQLException("No rows affected.");
-                }
-                connection.commit();
-                logger.info("Updated project {}", project.getName());
-            } catch (SQLException e) {
-                rollbackConnection();
-                logger.error(EXCEPTION_TAG + " {}", e.getMessage());
-                throw new SQLException(e.getMessage());
+        }
+        String updateQuery = "UPDATE project SET Name = ?, Description = ?, CreationDate = ?, Status = ? WHERE ProjectID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
+            ps.setString(1, project.getName());
+            ps.setString(2, project.getDescription());
+            ps.setDate(3, java.sql.Date.valueOf(project.getCreationDate()));
+            ps.setString(4, project.getStatus());
+            ps.setInt(5, project.getId());
+            int rowCount = ps.executeUpdate();
+            if (rowCount == 0) {
+                throw new SQLException("No rows affected.");
             }
+            connection.commit();
+            logger.info("Updated project {}", project.getName());
+        } catch (SQLException e) {
+            rollbackConnection();
+            logger.error(EXCEPTION_TAG + " {}", e.getMessage());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -136,6 +135,10 @@ public class DatabaseConnectionHandler {
 
     public void insertProject(Project project, String email, String partnerEmail) throws SQLException {
         // TODO: add name unique constraint
+        if (email.equals(partnerEmail)) {
+            logger.error(EXCEPTION_TAG + " Cannot enter yourself as a partner");
+            throw new SQLException("Cannot enter yourself as a partner");
+        }
         if (!isPartnerEmailAvailable(partnerEmail)) {
             logger.error(EXCEPTION_TAG + " Partner email is not available");
             throw new SQLException("Partner email is not available");
@@ -209,7 +212,7 @@ public class DatabaseConnectionHandler {
     }
 
     private Integer getNextSecurityGroupId() throws SQLException {
-        String query = "SELECT COUNT(*) FROM ProjectSecurity";
+        String query = "SELECT MAX(securityGroupID) FROM ProjectSecurity";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -299,7 +302,7 @@ public class DatabaseConnectionHandler {
     }
 
     private boolean isCustomerEmailUnique(Customer customer) throws SQLException {
-        String query = "SELECT COUNT(*) FROM customer WHERE PhoneNumber = " + "'" + customer.getEmail() + "'";
+        String query = "SELECT COUNT(*) FROM customer WHERE Email = " + "'" + customer.getEmail() + "'";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -446,7 +449,7 @@ public class DatabaseConnectionHandler {
 
     // Instance Methods
     public Integer getNextInstanceID() throws SQLException {
-        String query = "SELECT COUNT(*) FROM Instance";
+        String query = "SELECT MAX(instanceID) FROM Instance";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {

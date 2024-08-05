@@ -73,8 +73,12 @@ public class MainService {
         } catch (SQLIntegrityConstraintViolationException e) {
             return new ResponseEntity<>("User with this email does not exist", HttpStatus.CONFLICT);
         } catch (SQLException e) {
-            if (e.getMessage().contains("Project name is not unique")) {
-                return new ResponseEntity<>("Failed to update project: Project name is not unique" , HttpStatus.CONFLICT);
+            if (e.getMessage().contains("Cannot enter yourself as a partner")) {
+                return new ResponseEntity<>("Cannot enter yourself as a partner" , HttpStatus.CONFLICT);
+            } else if (e.getMessage().contains("Project name is not unique")) {
+                return new ResponseEntity<>("Project name is not unique" , HttpStatus.CONFLICT);
+            } else if (e.getMessage().contains("Partner email is not available")) {
+                return new ResponseEntity<>("Partner email is not available" , HttpStatus.CONFLICT);
             }
             return new ResponseEntity<>("Project insert failed", HttpStatus.BAD_REQUEST);
         }
