@@ -176,11 +176,12 @@ public class DatabaseConnectionHandler {
 
         String projectSecurityQuery = "INSERT INTO ProjectSecurity VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(projectSecurityQuery)) {
-            ps.setInt(1, getNextSecurityGroupId());
+            Integer nextSecurityGroupId = getNextSecurityGroupId();
+            ps.setInt(1, nextSecurityGroupId);
             ps.setInt(2, project.getId());
             ps.execute();
             connection.commit();
-            logger.info("Inserted project {} with security {}", project.getName(), getNextSecurityGroupId());
+            logger.info("Inserted project {} with security {}", project.getName(), nextSecurityGroupId);
         } catch (SQLException e) {
             rollbackConnection();
             logger.error(EXCEPTION_TAG + " {}", e.getMessage());
@@ -206,10 +207,11 @@ public class DatabaseConnectionHandler {
     }
 
     private Integer getNextSecurityGroupId() throws SQLException {
-        String query = "SELECT COUNT(*) FROM SecurityInfo";
+        String query = "SELECT COUNT(*) FROM ProjectSecurity";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                logger.info("Got next group id {}", rs.getInt(1) + 1);
                 return rs.getInt(1) + 1;
             }
         } catch (SQLException e) {
@@ -235,7 +237,7 @@ public class DatabaseConnectionHandler {
                 Project project = new Project(rs.getInt("ProjectID"), rs.getString("Name"), rs.getString("Description"), rs.getString("CreationDate"), rs.getString("Status"), rs.getString("PartnerEmail"));
                 allProjects.add(project);
             }
-            logger.info("Got all Projects {}", email);
+//            logger.info("Got all Projects {}", email);
         }
         return allProjects;
     }
@@ -272,7 +274,7 @@ public class DatabaseConnectionHandler {
                 ServiceDetails serviceDetails = new ServiceDetails(rs.getString("Name"), rs.getString("Description"), rs.getString("Status"), rs.getString("CostPerUnit"), rs.getString("Type"), rs.getString("CostType"));
                 allServices.add(serviceDetails);
             }
-            logger.info("Got all Services {}", projectID);
+//            logger.info("Got all Services {}", projectID);
         }
         return allServices;
     }
@@ -351,7 +353,7 @@ public class DatabaseConnectionHandler {
                 Customer customer = new Customer(rs.getString("email"), rs.getString("name"), rs.getString("phoneNumber"), rs.getString("password"), rs.getString("address"));
                 allCustomers.add(customer);
             }
-            logger.info("Got all Customer Information {}", email);
+//            logger.info("Got all Customer Information {}", email);
         }
         return allCustomers;
     }
@@ -492,7 +494,7 @@ public class DatabaseConnectionHandler {
                 Instance instance = new Instance(rs.getInt("InstanceID"), rs.getString("Name"), rs.getString("ServerID"), rs.getString("ProjectID"), rs.getString("Type"), rs.getString("TotalCost"), rs.getString("Status"), rs.getString("LaunchDate"), rs.getString("stopDate"));
                 allInstances.add(instance);
             }
-            logger.info("Got all Services {}", projectID);
+//            logger.info("Got all Services {}", projectID);
         }
         return allInstances;
     }
