@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext } from "react";
 import axios from "axios";
 
 const UserContext = createContext();
@@ -86,7 +86,7 @@ export const UserProvider = ({ children }) => {
     const params = {
       serverID: instanceInfo.serverID,
       name: instanceInfo.name,
-      projectID:  instanceInfo.projectID,
+      projectID: instanceInfo.projectID,
       type: instanceInfo.type,
       totalCost: instanceInfo.totalCost,
       status: instanceInfo.status,
@@ -176,6 +176,7 @@ export const UserProvider = ({ children }) => {
       const response = await axios.put("http://localhost:8080/api/updateProject", null, { params });
       return response.data;
     } catch (error) {
+      console.log(error);
       throw new Error(error.response);
     }
   };
@@ -200,10 +201,37 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getCostPerInstanceType = async (projectID) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/getCostPerInstanceType", { params: { projectID } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+  const havingCount = async (projectID) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/havingCount", { params: { projectID } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+
+  const deleteProject = async (projectId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/deleteProject`, { params: { projectId } });
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, division, getNestedInstanceTypeCost, deleteProject
     }}>
       {children}
     </UserContext.Provider>

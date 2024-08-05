@@ -1,6 +1,7 @@
 import React from 'react';
+import { TrashIcon } from "@heroicons/react/24/solid";
 
-const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject, onEditProject }) => (
+const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject, onEditProject, onDeleteProject }) => (
   <>
     <div className="mb-8">
       <h2 className="text-2xl font-bold mb-2 text-gray-700">Your Services</h2>
@@ -32,10 +33,16 @@ const HomeContent = ({ defaultProject, projects, onProjectClick, onViewProject, 
               View
             </button>
             <button
-              className="absolute bottom-4 right-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
+              className="absolute bottom-4 right-16 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
               onClick={() => onEditProject(project)}
             >
               Edit
+            </button>
+            <button
+              className="absolute bottom-4 right-4 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+              onClick={() => onDeleteProject(project)}
+            >
+              <TrashIcon className="h-5 w-5" />
             </button>
           </div>
         ))}

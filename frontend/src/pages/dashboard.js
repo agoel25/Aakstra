@@ -40,6 +40,7 @@ export default function Dashboard() {
     projects,
     addCard,
     getProjectsByEmail,
+    deleteProject, // Assume this function is defined in the UserContext
   } = useUser();
 
   useEffect(() => {
@@ -97,6 +98,16 @@ export default function Dashboard() {
   const handleOpenEditModal = (project) => {
     setSelectedProject(project);
     setIsEditing(true);
+  };
+
+  const handleDeleteProject = async (project) => {
+    try {
+      await deleteProject(project.id);
+      const userProjects = await getProjectsByEmail(user.email);
+      setProjects(userProjects);
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+    }
   };
 
   const defaultProject = user
@@ -160,6 +171,7 @@ export default function Dashboard() {
             onProjectClick={() => setIsCreating(true)}
             onViewProject={handleViewProject}
             onEditProject={handleOpenEditModal}
+            onDeleteProject={handleDeleteProject} // Pass the delete handler
           />
         )}
         {currentView === "billing" && (

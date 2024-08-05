@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { TrashIcon } from "@heroicons/react/24/solid";
 import CreateInstanceModal from "./CreateInstanceModal";
 import { useUser } from "@/context/UserContext";
 
@@ -11,8 +10,22 @@ const ProjectContent = ({ projectID }) => {
   const [newService, setNewService] = useState("");
   const [projectServices, setProjectServices] = useState([]);
   const [projectInstances, setProjectInstances] = useState([]);
+  const [costPerInstanceType, setCostPerInstanceType] = useState([]);
+  const [serviceCounts, setServiceCounts] = useState([]);
+  const [projectsUsingAllServices, setProjectsUsingAllServices] = useState([]);
+  const [nestedInstanceTypeCost, setNestedInstanceTypeCost] = useState("");
 
-  const { projects, addInstance, addService, getServicesByProjectID, getInstancesByServiceID } = useUser();
+  const {
+    projects,
+    addInstance,
+    addService,
+    getServicesByProjectID,
+    getInstancesByServiceID,
+    getCostPerInstanceType,
+    havingCount,
+    division,
+    getNestedInstanceTypeCost
+  } = useUser();
 
   const project = projects?.find((p) => p.id === projectID);
 
@@ -74,6 +87,26 @@ const ProjectContent = ({ projectID }) => {
       }
     }
   };
+
+  const handleFetchCostPerInstanceType = async () => {
+    try {
+      const result = await getCostPerInstanceType(projectID);
+      setCostPerInstanceType(result);
+    } catch (error) {
+      console.error("Failed to fetch cost per instance type:", error);
+    }
+  };
+
+  const handleFetchServiceCounts = async () => {
+    try {
+      const result = await havingCount(projectID);
+      setServiceCounts(result);
+    } catch (error) {
+      console.error("Failed to fetch service counts:", error);
+    }
+  };
+
+
 
   if (!project) {
     return <p>Loading...</p>;
@@ -163,6 +196,57 @@ const ProjectContent = ({ projectID }) => {
         >
           Add Service
         </button>
+      </div>
+      <div className="mt-8">
+        <button
+          className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+          onClick={handleFetchCostPerInstanceType}
+        >
+          Get Cost Per Instance Type
+        </button>
+        {costPerInstanceType.length > 0 && (
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b">Type</th>
+                <th className="py-2 px-4 border-b">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              {costPerInstanceType.map((item, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 border-b">{item.type}</td>
+                  <td className="py-2 px-4 border-b">{item.cost}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <button
+          className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+          onClick={handleFetchServiceCounts}
+        >
+          Get Service Counts
+        </button>
+        {serviceCounts.length > 0 && (
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b">Type</th>
+                <th className="py-2 px-4 border-b">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {serviceCounts.map((item, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 border-b">{item.type}</td>
+                  <td className="py-2 px-4 border-b">{item.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
       </div>
       <CreateInstanceModal
         isOpen={isCreatingInstance}
