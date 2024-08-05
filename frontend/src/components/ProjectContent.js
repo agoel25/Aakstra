@@ -39,12 +39,15 @@ const ProjectContent = ({ projectID }) => {
   }, [projectID, getServicesByProjectID, getInstancesByServiceID]);
 
   const handleCreateInstance = async (instance) => {
+
+    const randomCost = Math.floor(Math.random() * (201 - 100)) + 100;
+
     const newInstance = {
       serverID: "101",
       name: selectedService.name,
       projectID:  projectID,
-      type: 'micro',
-      totalCost: "0",
+      type: instance.type,
+      totalCost: randomCost,
       status: 'running',
       launchDate: '2024-04-04',
       stopDate: '2024-05-05',
