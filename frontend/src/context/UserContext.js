@@ -331,6 +331,7 @@ export const UserProvider = ({ children }) => {
     const params = sanitizeSQL({ projectID });
     try {
       await axios.delete(`http://localhost:8080/api/deleteProject`, { params });
+      alert("Product deleted successfully")
     } catch (error) {
       alert(error.response.data);
       throw new Error(error.response.data);
