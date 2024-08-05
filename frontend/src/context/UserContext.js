@@ -222,6 +222,7 @@ export const UserProvider = ({ children }) => {
       creationDate: projectInfo.creationDate.substring(0, 10),
       status: projectInfo.status,
       partnerEmail: projectInfo.partnerEmail,
+      oldName: projectInfo.oldName,
     });
     try {
       const response = await axios.put("http://localhost:8080/api/updateProject", null, { params });

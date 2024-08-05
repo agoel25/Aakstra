@@ -8,6 +8,7 @@ const EditProjectModal = ({ isOpen, onClose, project, handleEditProject }) => {
   const [partnerEmail, setPartnerEmail] = useState("");
   const [status, setStatus] = useState("");
   const [creationDate, setCreationDate] = useState("");
+  const [originalName, setOriginalName] = useState("");
 
   const { updateProject } = useUser();
 
@@ -18,6 +19,7 @@ const EditProjectModal = ({ isOpen, onClose, project, handleEditProject }) => {
       setPartnerEmail(project.partnerEmail);
       setStatus(project.status);
       setCreationDate(project.creationDate);
+      setOriginalName(project.name);
     }
   }, [project]);
 
@@ -62,6 +64,7 @@ const EditProjectModal = ({ isOpen, onClose, project, handleEditProject }) => {
       partnerEmail,
       status,
       creationDate,
+      oldName: originalName,
     };
 
     try {
