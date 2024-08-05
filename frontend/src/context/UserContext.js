@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext } from "react";
 import axios from "axios";
 
 const UserContext = createContext();
@@ -86,7 +86,7 @@ export const UserProvider = ({ children }) => {
     const params = {
       serverID: instanceInfo.serverID,
       name: instanceInfo.name,
-      projectID:  instanceInfo.projectID,
+      projectID: instanceInfo.projectID,
       type: instanceInfo.type,
       totalCost: instanceInfo.totalCost,
       status: instanceInfo.status,
@@ -168,13 +168,61 @@ export const UserProvider = ({ children }) => {
       projectId: projectInfo.projectId,
       name: projectInfo.name,
       description: projectInfo.description,
-      creationDate: projectInfo.creationDate,
+      creationDate: projectInfo.creationDate.substring(0, 10),
       status: projectInfo.status,
       partnerEmail: projectInfo.partnerEmail,
     };
     try {
       const response = await axios.put("http://localhost:8080/api/updateProject", null, { params });
       return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error(error.response);
+    }
+  };
+
+  const projection = async (attributes, relation, numAttributes) => {
+    const params = { attributes, relation, numAttributes };
+    try {
+      const response = await axios.get("http://localhost:8080/api/projection", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+  const selection = async (table, whereClause) => {
+    const params = { whereQuery: whereClause };
+    try {
+      const response = await axios.get("http://localhost:8080/api/selection", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+  const getCostPerInstanceType = async (projectID) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/getCostPerInstanceType", { params: { projectID } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+  const havingCount = async (projectID) => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/havingCount", { params: { projectID } });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
+
+  const deleteProject = async (projectID) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/deleteProject`, { params: { projectID } });
     } catch (error) {
       throw new Error(error.response);
     }
@@ -183,7 +231,7 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection, selection, getCostPerInstanceType, havingCount, deleteProject
     }}>
       {children}
     </UserContext.Provider>

@@ -9,26 +9,7 @@ const CreateProjectModal = ({ isOpen, onClose, newProjectName, setNewProjectName
   const [securityConfigName, setSecurityConfigName] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
   const [partnerEmail, setPartnerEmail] = useState('');
-
   const { user, addProject, addService } = useUser();
-
-  const handleAddSecurityConfig = () => {
-    if (securityConfigType && securityConfigName) {
-      setSecurityConfiguration({ type: securityConfigType, name: securityConfigName });
-      setSecurityConfigType('');
-      setSecurityConfigName('');
-    }
-  };
-
-  const handleAddService = (service) => {
-    if (service && !selectedServices.includes(service)) {
-      setSelectedServices([...selectedServices, service]);
-    }
-  };
-
-  const handleRemoveService = (service) => {
-    setSelectedServices(selectedServices.filter(s => s !== service));
-  };
 
   const handleCreate = async () => {
     if (!user || !user.email) {

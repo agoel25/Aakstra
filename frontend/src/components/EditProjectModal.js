@@ -59,13 +59,6 @@ const EditProjectModal = ({ isOpen, onClose, project, handleEditProject }) => {
       />
       <input
         type="text"
-        value={partnerEmail}
-        onChange={(e) => setPartnerEmail(e.target.value)}
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-        placeholder="Enter partner email"
-      />
-      <input
-        type="text"
         value={status}
         onChange={(e) => setStatus(e.target.value)}
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
