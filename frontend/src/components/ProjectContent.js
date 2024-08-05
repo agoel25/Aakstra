@@ -129,12 +129,6 @@ const ProjectContent = ({ projectID }) => {
                     >
                       Add Instance
                     </button>
-                    <button
-                      className="ml-2 text-red-600 hover:text-red-800 focus:outline-none"
-                      onClick={() => handleDeleteService(service.id)}
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
                   </div>
                 </div>
                 {true &&
@@ -160,14 +154,6 @@ const ProjectContent = ({ projectID }) => {
                               <td className="py-2 px-4 border-b">{instance?.totalCost}</td>
                               <td className="py-2 px-4 border-b">{instance?.launchDate}</td>
                               <td className="py-2 px-4 border-b">{instance?.status}</td>
-                              <td className="py-2 px-4 border-b">
-                                <button
-                                  className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                  onClick={() => handleDeleteInstance(service.id, i)}
-                                >
-                                  Delete Instance
-                                </button>
-                              </td>
                             </tr>
                           ))}
                       </tbody>
