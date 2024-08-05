@@ -40,7 +40,7 @@ export default function Dashboard() {
     projects,
     addCard,
     getProjectsByEmail,
-    deleteProject, // Assume this function is defined in the UserContext
+    deleteProject,
   } = useUser();
 
   useEffect(() => {
@@ -171,7 +171,7 @@ export default function Dashboard() {
             onProjectClick={() => setIsCreating(true)}
             onViewProject={handleViewProject}
             onEditProject={handleOpenEditModal}
-            onDeleteProject={handleDeleteProject} // Pass the delete handler
+            onDeleteProject={handleDeleteProject}
           />
         )}
         {currentView === "billing" && (

@@ -220,9 +220,9 @@ export const UserProvider = ({ children }) => {
   };
 
 
-  const deleteProject = async (projectId) => {
+  const deleteProject = async (projectID) => {
     try {
-      await axios.delete(`http://localhost:8080/api/deleteProject`, { params: { projectId } });
+      await axios.delete(`http://localhost:8080/api/deleteProject`, { params: { projectID } });
     } catch (error) {
       throw new Error(error.response);
     }
