@@ -138,6 +138,12 @@ public class DatabaseConnectionHandler {
             logger.error(EXCEPTION_TAG + " Partner email is not available");
             throw new SQLException("Partner email is not available");
         }
+
+        if (!isProjectNameUnique(project.getName())) {
+            logger.error(EXCEPTION_TAG + " Project name is not unique");
+            throw new SQLException("Project name is not unique");
+        }
+
         String projectQuery = "INSERT INTO project VALUES (?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(projectQuery)) {
             ps.setInt(1, project.getId());

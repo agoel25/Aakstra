@@ -65,9 +65,12 @@ public class MainService {
             databaseConnectionHandler.insertProject(project, email, partnerEmail);
             return new ResponseEntity<>("Project inserted successfully", HttpStatus.OK);
         } catch (SQLIntegrityConstraintViolationException e) {
-            return new ResponseEntity<>("User with this email does not exist " + e.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>("User with this email does not exist", HttpStatus.CONFLICT);
         } catch (SQLException e) {
-            return new ResponseEntity<>("Project insert failed " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            if (e.getMessage().contains("Project name is not unique")) {
+                return new ResponseEntity<>("Failed to update project: Project name is not unique" , HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity<>("Project insert failed", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -205,7 +208,7 @@ public class MainService {
             return new ResponseEntity<>("Project updated successfully", HttpStatus.OK);
         } catch (SQLException e) {
             if (e.getMessage().contains("Project name is not unique")) {
-                return new ResponseEntity<>("Failed to update project: " + e.getMessage(), HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Failed to update project: Project name is not unique", HttpStatus.CONFLICT);
             }
             return new ResponseEntity<>("Failed to update project: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
