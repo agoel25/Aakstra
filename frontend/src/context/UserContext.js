@@ -3,6 +3,39 @@ import axios from "axios";
 
 const UserContext = createContext();
 
+const sqlKeywords = [
+  "SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "TRUNCATE", "ALTER", "CREATE", 
+  "REPLACE", "EXECUTE", "EXEC", "--", ";", "/*", "*/"
+];
+
+const sanitizeSQL = (param) => {
+  const isSQLInjection = (value) => {
+    if (typeof value === 'string') {
+      const upperValue = value.toUpperCase();
+      return sqlKeywords.some(keyword => upperValue.includes(keyword));
+    }
+    return false;
+  };
+
+  if (typeof param === 'string') {
+    if (isSQLInjection(param)) {
+      alert('Potential SQL Injection detected')
+      throw new Error('Potential SQL Injection detected');
+    }
+    return param;
+  }
+
+  if (typeof param === 'object' && param !== null) {
+    const sanitizedObj = {};
+    for (const key in param) {
+      sanitizedObj[key] = sanitizeSQL(param[key]);
+    }
+    return sanitizedObj;
+  }
+
+  return param;
+};
+
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState(null);
@@ -12,25 +45,26 @@ export const UserProvider = ({ children }) => {
   const [customerDetails, setCustomerDetails] = useState([]);
 
   const signup = async (userInfo) => {
-    const params = {
+    const params = sanitizeSQL({
       email: userInfo.email,
       name: userInfo.name,
       phoneNumber: userInfo.phoneNumber,
       password: userInfo.password,
       address: userInfo.address,
-    };
+    });
     try {
       await axios.post("http://localhost:8080/api/signup", null, { params });
       const response = await getCustomerDetailsByEmail(userInfo.email);
       setUser(response[0]);
       return response;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const login = async (email, password) => {
-    const params = { email, password };
+    const params = sanitizeSQL({ email, password });
     try {
       const response = await axios.post("http://localhost:8080/api/login", null, { params });
       if (response.status === 200) {
@@ -39,29 +73,31 @@ export const UserProvider = ({ children }) => {
       }
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const addProject = async (projectInfo) => {
-    const params = {
+    const params = sanitizeSQL({
       email: projectInfo.email,
       name: projectInfo.name,
       description: projectInfo.description,
       creationDate: "2011-02-27",
       status: "active",
       partnerEmail: projectInfo.partnerEmail,
-    };
+    });
     try {
       const response = await axios.post("http://localhost:8080/api/addProject", null, { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const addCard = async (billingInfo) => {
-    const params = {
+    const params = sanitizeSQL({
       cardNumber: billingInfo.cardNumber,
       email: billingInfo.email,
       cvv: billingInfo.cvv,
@@ -71,19 +107,20 @@ export const UserProvider = ({ children }) => {
       expiryDate: billingInfo.expiryDate,
       paymentType: billingInfo.paymentType,
       isDefault: billingInfo.isDefault,
-    };
+    });
     try {
       const response = await axios.post("http://localhost:8080/api/addCard", null, { params });
       const newBilling = { ...params, id: response.data.id };
       setBillingDetails([...billingDetails, newBilling]);
       return newBilling;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const addInstance = async (instanceInfo) => {
-    const params = {
+    const params = sanitizeSQL({
       serverID: instanceInfo.serverID,
       name: instanceInfo.name,
       projectID: instanceInfo.projectID,
@@ -92,139 +129,156 @@ export const UserProvider = ({ children }) => {
       status: instanceInfo.status,
       launchDate: instanceInfo.launchDate,
       stopDate: instanceInfo.stopDate,
-    };
+    });
 
     try {
       const response = await axios.post("http://localhost:8080/api/addInstance", null, { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const addService = async (serviceInfo) => {
-    const params = { projectID: serviceInfo.projectID, name: serviceInfo.name };
+    const params = sanitizeSQL({ projectID: serviceInfo.projectID, name: serviceInfo.name });
     try {
       const response = await axios.post("http://localhost:8080/api/addProjectService", null, { params });
       const newService = { ...params, id: response.data.id };
       setServices([...services, newService]);
       return newService;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const getProjectsByEmail = async (email) => {
+    const params = sanitizeSQL({ email });
     try {
-      const response = await axios.get("http://localhost:8080/api/getProjects", { params: { email } });
+      const response = await axios.get("http://localhost:8080/api/getProjects", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const getServicesByProjectID = async (projectID) => {
-    const params = { projectID: projectID };
+    const params = sanitizeSQL({ projectID: projectID });
     try {
       const response = await axios.get("http://localhost:8080/api/getServices", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const getInstancesByServiceID = async (projectID, serviceName) => {
-    const params = { projectID, name: serviceName };
+    const params = sanitizeSQL({ projectID, name: serviceName });
     try {
       const response = await axios.get("http://localhost:8080/api/getInstances", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const getBillingDetailsByEmail = async (email) => {
+    const params = sanitizeSQL({ email });
     try {
-      const response = await axios.get("http://localhost:8080/api/getBillingDetails", { params: { email } });
+      const response = await axios.get("http://localhost:8080/api/getBillingDetails", { params });
       setBillingDetails(response.data);
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const getCustomerDetailsByEmail = async (email) => {
+    const params = sanitizeSQL({ email });
     try {
-      const response = await axios.get("http://localhost:8080/api/getCustomerDetails", { params: { email } });
+      const response = await axios.get("http://localhost:8080/api/getCustomerDetails", { params });
       setCustomerDetails(response.data);
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const updateProject = async (projectInfo) => {
-    const params = {
+    const params = sanitizeSQL({
       projectId: projectInfo.projectId,
       name: projectInfo.name,
       description: projectInfo.description,
       creationDate: projectInfo.creationDate.substring(0, 10),
       status: projectInfo.status,
       partnerEmail: projectInfo.partnerEmail,
-    };
+    });
     try {
       const response = await axios.put("http://localhost:8080/api/updateProject", null, { params });
       return response.data;
     } catch (error) {
-      console.log(error);
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const projection = async (attributes, relation, numAttributes) => {
-    const params = { attributes, relation, numAttributes };
+    const params = sanitizeSQL({ attributes, relation, numAttributes });
     try {
       const response = await axios.get("http://localhost:8080/api/projection", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const selection = async (table, whereClause) => {
-    const params = { whereQuery: whereClause };
+    const params = sanitizeSQL({ whereQuery: whereClause });
     try {
       const response = await axios.get("http://localhost:8080/api/selection", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const getCostPerInstanceType = async (projectID) => {
+    const params = sanitizeSQL({ projectID });
     try {
-      const response = await axios.get("http://localhost:8080/api/getCostPerInstanceType", { params: { projectID } });
+      const response = await axios.get("http://localhost:8080/api/getCostPerInstanceType", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
   const havingCount = async (projectID) => {
+    const params = sanitizeSQL({ projectID });
     try {
-      const response = await axios.get("http://localhost:8080/api/havingCount", { params: { projectID } });
+      const response = await axios.get("http://localhost:8080/api/havingCount", { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 
-
   const deleteProject = async (projectID) => {
+    const params = sanitizeSQL({ projectID });
     try {
-      await axios.delete(`http://localhost:8080/api/deleteProject`, { params: { projectID } });
+      await axios.delete(`http://localhost:8080/api/deleteProject`, { params });
     } catch (error) {
-      throw new Error(error.response);
+      alert(error.response.data);
+      throw new Error(error.response.data);
     }
   };
 

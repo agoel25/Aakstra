@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CreateInstanceModal from "./CreateInstanceModal";
 import { useUser } from "@/context/UserContext";
 
-const cloudServices = ['gamma', 'authIt', 'GPUb', 'RapidX', 'cSQL'];
+const cloudServices = ["gamma", "authIt", "GPUb", "RapidX", "cSQL"];
 
 const ProjectContent = ({ projectID }) => {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
@@ -35,7 +35,10 @@ const ProjectContent = ({ projectID }) => {
 
         const instances = await Promise.all(
           services.map(async (service) => {
-            const serviceInstances = await getInstancesByServiceID(projectID, service.name);
+            const serviceInstances = await getInstancesByServiceID(
+              projectID,
+              service.name
+            );
             return serviceInstances;
           })
         );
@@ -58,15 +61,18 @@ const ProjectContent = ({ projectID }) => {
       projectID: projectID,
       type: instance.type,
       totalCost: randomCost,
-      status: 'running',
-      launchDate: '2024-04-04',
-      stopDate: '2024-05-05',
+      status: "running",
+      launchDate: "2024-04-04",
+      stopDate: "2024-05-05",
     };
 
     try {
       await addInstance({ ...newInstance });
 
-      const updatedInstances = await getInstancesByServiceID(projectID, selectedService.name);
+      const updatedInstances = await getInstancesByServiceID(
+        projectID,
+        selectedService.name
+      );
       setProjectInstances([...projectInstances, ...updatedInstances]);
     } catch (error) {
       console.error("Failed to create instance:", error);
@@ -105,8 +111,6 @@ const ProjectContent = ({ projectID }) => {
     }
   };
 
-
-
   if (!project) {
     return <p>Loading...</p>;
   }
@@ -144,7 +148,8 @@ const ProjectContent = ({ projectID }) => {
                     </button>
                   </div>
                 </div>
-                {projectInstances.filter((i) => i.name === service.name).length > 0 && (
+                {projectInstances.filter((i) => i.name === service.name)
+                  .length > 0 && (
                   <table className="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead>
                       <tr>
@@ -159,10 +164,18 @@ const ProjectContent = ({ projectID }) => {
                         .filter((i) => i.name === service.name)
                         .map((instance, i) => (
                           <tr key={i}>
-                            <td className="py-2 px-4 border-b">{instance?.type}</td>
-                            <td className="py-2 px-4 border-b">{instance?.totalCost}</td>
-                            <td className="py-2 px-4 border-b">{instance?.launchDate}</td>
-                            <td className="py-2 px-4 border-b">{instance?.status}</td>
+                            <td className="py-2 px-4 border-b">
+                              {instance?.type}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {instance?.totalCost}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {instance?.launchDate}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {instance?.status}
+                            </td>
                           </tr>
                         ))}
                     </tbody>
@@ -181,7 +194,9 @@ const ProjectContent = ({ projectID }) => {
         >
           <option value="">Select Service</option>
           {cloudServices
-            .filter((service) => !projectServices.find((s) => s.name === service))
+            .filter(
+              (service) => !projectServices.find((s) => s.name === service)
+            )
             .map((service) => (
               <option key={service} value={service}>
                 {service}
@@ -191,61 +206,71 @@ const ProjectContent = ({ projectID }) => {
         <button
           className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           onClick={() => handleAddService(newService)}
-          disabled={projectServices.find((s) => s.name === newService) || newService === ""}
+          disabled={
+            projectServices.find((s) => s.name === newService) ||
+            newService === ""
+          }
         >
           Add Service
         </button>
       </div>
       <div className="mt-8">
-        <button
-          className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
-          onClick={handleFetchCostPerInstanceType}
-        >
-          Get Cost Per Instance Type
-        </button>
-        {costPerInstanceType.length > 0 && (
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Type</th>
-                <th className="py-2 px-4 border-b">Cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              {costPerInstanceType.map((item, index) => (
-                <tr key={index}>
-                  <td className="py-2 px-4 border-b">{item.type}</td>
-                  <td className="py-2 px-4 border-b">{item.cost}</td>
+        <div>
+          <button
+            className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+            onClick={handleFetchCostPerInstanceType}
+          >
+            Get Cost Per Instance Type
+          </button>
+          {costPerInstanceType.length > 0 ? (
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Type</th>
+                  <th className="py-2 px-4 border-b">Cost</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        <button
-          className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
-          onClick={handleFetchServiceCounts}
-        >
-          Get Service Counts
-        </button>
-        {serviceCounts.length > 0 && (
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Type</th>
-                <th className="py-2 px-4 border-b">Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {serviceCounts.map((item, index) => (
-                <tr key={index}>
-                  <td className="py-2 px-4 border-b">{item.type}</td>
-                  <td className="py-2 px-4 border-b">{item.count}</td>
+              </thead>
+              <tbody>
+                {costPerInstanceType.map((item, index) => (
+                  <tr key={index}>
+                    <td className="py-2 px-4 border-b">{item.type}</td>
+                    <td className="py-2 px-4 border-b">{item.cost}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No cost data found for instance types.</p>
+          )}
+        </div>
+        <div>
+          <button
+            className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+            onClick={handleFetchServiceCounts}
+          >
+            Get Duplicate Service Counts
+          </button>
+          {serviceCounts.length > 0 ? (
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg mb-4">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Type</th>
+                  <th className="py-2 px-4 border-b">Count</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-
+              </thead>
+              <tbody>
+                {serviceCounts.map((item, index) => (
+                  <tr key={index}>
+                    <td className="py-2 px-4 border-b">{item.type}</td>
+                    <td className="py-2 px-4 border-b">{item.count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No duplicate service counts found.</p>
+          )}
+        </div>
       </div>
       <CreateInstanceModal
         isOpen={isCreatingInstance}
