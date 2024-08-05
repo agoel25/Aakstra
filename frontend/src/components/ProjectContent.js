@@ -98,6 +98,7 @@ const ProjectContent = ({ projectID }) => {
   const handleFetchServiceCounts = async () => {
     try {
       const result = await havingCount(projectID);
+      console.log(result);
       setServiceCounts(result);
     } catch (error) {
       console.error("Failed to fetch service counts:", error);
