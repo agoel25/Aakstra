@@ -131,7 +131,7 @@ export const UserProvider = ({ children }) => {
       email: projectInfo.email,
       name: projectInfo.name,
       description: projectInfo.description,
-      creationDate: "2025-08-05",
+      creationDate: "2024-08-05",
       status: "active",
       partnerEmail: projectInfo.partnerEmail,
     });
