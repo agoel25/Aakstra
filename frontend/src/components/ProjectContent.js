@@ -65,14 +65,6 @@ const ProjectContent = ({ projectID }) => {
   };
   
 
-  const handleDeleteInstance = async (serviceId, index) => {
-    try {
-
-    } catch (error) {
-      console.error("Failed to delete instance:", error);
-    }
-  };
-
   const handleAddService = async (service) => {
     if (service && !projectServices.find((s) => s.name === service)) {
       try {
@@ -83,13 +75,6 @@ const ProjectContent = ({ projectID }) => {
       } catch (error) {
         console.error("Failed to add service:", error);
       }
-    }
-  };
-
-  const handleDeleteService = async (serviceId) => {
-    try {
-    } catch (error) {
-      console.error("Failed to delete service:", error);
     }
   };
 
@@ -136,12 +121,10 @@ const ProjectContent = ({ projectID }) => {
                     <table className="min-w-full bg-white border border-gray-300 rounded-lg">
                       <thead>
                         <tr>
-                          <th className="py-2 px-4 border-b">Instance ID</th>
                           <th className="py-2 px-4 border-b">Type</th>
                           <th className="py-2 px-4 border-b">Cost</th>
                           <th className="py-2 px-4 border-b">Launch Date</th>
                           <th className="py-2 px-4 border-b">Status</th>
-                          <th className="py-2 px-4 border-b">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -149,7 +132,6 @@ const ProjectContent = ({ projectID }) => {
                           .filter((i) => i.serviceID === service.id)
                           .map((instance, i) => (
                             <tr key={i}>
-                              <td className="py-2 px-4 border-b">{instance?.id}</td>
                               <td className="py-2 px-4 border-b">{instance?.type}</td>
                               <td className="py-2 px-4 border-b">{instance?.totalCost}</td>
                               <td className="py-2 px-4 border-b">{instance?.launchDate}</td>
