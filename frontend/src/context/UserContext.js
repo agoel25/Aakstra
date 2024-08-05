@@ -368,7 +368,6 @@ export const UserProvider = ({ children }) => {
         signup,
         login,
         addProject,
-        addCard,
         addInstance,
         addService,
         setProjects,
