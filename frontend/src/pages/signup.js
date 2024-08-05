@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Inter } from "next/font/google";
-import { useUser } from "@/context/UserContext_actual";
-
-const inter = Inter({ subsets: ["latin"] });
+import { useUser } from "@/context/UserContext";
 
 export default function Signup() {
   const [userInfo, setUserInfo] = useState({
