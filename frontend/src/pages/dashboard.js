@@ -7,22 +7,38 @@ import NavItem from "../components/NavItem";
 import HomeContent from "../components/HomeContent";
 import BillingContent from "../components/BillingContent";
 import ProjectContent from "../components/ProjectContent";
-import { HomeIcon, CreditCardIcon } from '@heroicons/react/24/solid';
+import {
+  HomeIcon,
+  CreditCardIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
 import { useUser } from "@/context/UserContext";
+import AdminContent from "@/components/AdminContent";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Dashboard() {
   const [newProjectName, setNewProjectName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState("home");
   const [isAddingBilling, setIsAddingBilling] = useState(false);
-  const [newBillingDetail, setNewBillingDetail] = useState({ number: "", cvv: "", expiry: "" });
+  const [newBillingDetail, setNewBillingDetail] = useState({
+    number: "",
+    cvv: "",
+    expiry: "",
+  });
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const { user, billingDetails, setProjects, projects, addCard, getProjectsByEmail } = useUser();
+  const {
+    user,
+    billingDetails,
+    setProjects,
+    projects,
+    addCard,
+    getProjectsByEmail,
+  } = useUser();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -63,7 +79,7 @@ export default function Dashboard() {
 
   const handleViewProject = (project) => {
     setSelectedProjectId(project.id);
-    setCurrentView('project');
+    setCurrentView("project");
   };
 
   const handleEditProject = async () => {
@@ -101,26 +117,35 @@ export default function Dashboard() {
         </div>
         <nav className="flex-1 p-6">
           <ul>
-            <NavItem 
-              icon={HomeIcon} 
-              label="Home" 
-              onClick={() => setCurrentView('home')} 
-              isActive={currentView === 'home' || currentView === 'project'} 
+            <NavItem
+              icon={HomeIcon}
+              label="Home"
+              onClick={() => setCurrentView("home")}
+              isActive={currentView === "home" || currentView === "project"}
             />
-            <NavItem 
-              icon={CreditCardIcon} 
-              label="Billing" 
-              onClick={() => setCurrentView('billing')} 
-              isActive={currentView === 'billing'} 
+            <NavItem
+              icon={CreditCardIcon}
+              label="Billing"
+              onClick={() => setCurrentView("billing")}
+              isActive={currentView === "billing"}
+            />
+            <NavItem
+              icon={UserCircleIcon}
+              label="Admin"
+              onClick={() => setCurrentView("admin")}
+              isActive={currentView === "admin"}
             />
           </ul>
         </nav>
       </aside>
-      <main className={`flex-1 flex flex-col p-8 bg-gray-100 ${inter.className}`}>
+      <main
+        className={`flex-1 flex flex-col p-8 bg-gray-100 ${inter.className}`}
+      >
         <h1 className="text-md text-gray-700 font-bold mb-8">
-          {user?.email} {'>'} {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
+          Dashboard {">"}{" "}
+          {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
         </h1>
-        {currentView === 'home' && (
+        {currentView === "home" && (
           <HomeContent
             defaultProject={defaultProject}
             projects={projects}
@@ -129,13 +154,14 @@ export default function Dashboard() {
             onEditProject={handleOpenEditModal}
           />
         )}
-        {currentView === 'billing' && (
-          <BillingContent 
-            billingDetails={billingDetails} 
-            onAddBillingClick={() => setIsAddingBilling(true)} 
+        {currentView === "billing" && (
+          <BillingContent
+            billingDetails={billingDetails}
+            onAddBillingClick={() => setIsAddingBilling(true)}
           />
         )}
-        {currentView === 'project' && selectedProjectId && (
+        {currentView === "admin" && <AdminContent />}
+        {currentView === "project" && selectedProjectId && (
           <ProjectContent projectID={selectedProjectId} projects={projects} />
         )}
         <CreateProjectModal

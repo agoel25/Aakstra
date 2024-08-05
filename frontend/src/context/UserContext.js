@@ -180,10 +180,20 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const projection = async (attributes, relation, numAttributes) => {
+    const params = { attributes, relation, numAttributes };
+    try {
+      const response = await axios.get("http://localhost:8080/api/projection", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response);
+    }
+  };
+
   return (
     <UserContext.Provider value={{
       user, setUser, signup, login, addProject, addCard, addInstance, addService, setProjects,
-      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject
+      projects, services, instances, billingDetails, getProjectsByEmail, getServicesByProjectID, getInstancesByServiceID, getBillingDetailsByEmail, getCustomerDetailsByEmail, updateProject, projection
     }}>
       {children}
     </UserContext.Provider>
