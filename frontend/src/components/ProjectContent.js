@@ -34,6 +34,7 @@ const ProjectContent = ({ projectID }) => {
     havingCount,
     division,
     getNestedInstanceTypeCost,
+    user
   } = useUser();
 
   const project = projects?.find((p) => p.id === projectID);
@@ -124,9 +125,13 @@ const ProjectContent = ({ projectID }) => {
   };
 
   const handleFetchProjectsUsingAllServices = async () => {
+
+    if (!user) {
+      return;
+    }
     setProjectsUsingAllServicesFetched(true);
     try {
-      const result = await division(projectID);
+      const result = await division(user.email);
       setProjectsUsingAllServices(result);
     } catch (error) {
       console.error("Failed to fetch projects using all services:", error);
@@ -337,7 +342,7 @@ const ProjectContent = ({ projectID }) => {
             className="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
             onClick={handleFetchNestedInstanceTypeCost}
           >
-            Get Nested Instance Type Cost
+            Get Instance Type With Maximum Average Cost
           </button>
           {nestedInstanceTypeCostFetched && !nestedInstanceTypeCost && (
             <p>No nested instance type cost data found.</p>
