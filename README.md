@@ -2,7 +2,7 @@
 
 ## Milestone 4/5 Deliverables:
 1. [PDF document with cover page](./docs/milestone_4.pdf)
-2. [SQL initialization script (initialize.sql)](./backend/services/src/main/java/com/cloud/services/database)
+2. [SQL initialization script (initialize.sql)](./backend/services/src/main/java/com/cloud/services/database/initialize.sql)
 
 #### Additional setup required to run the application:
 1. Add your oracleDB credentials to the `DatabaseConnectionHandler.java` and `application.properties` files.
