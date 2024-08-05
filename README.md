@@ -1,5 +1,17 @@
 # AAK Cloud Services
 
+## Milestone 4/5 Deliverables:
+1. [PDF document with cover page](./docs/milestone_4.pdf)
+2. [SQL initialization script](./backend/services/src/main/java/com/cloud/services/database)
+
+#### Additional setup required to run the application:
+1. Add your oracleDB credentials to the `DatabaseConnectionHandler.java` and `application.properties` files.
+2. Setup SSH tunneling into the UBC CS department undergrad servers.
+3. Navigate to the backend directory and run `./gradlew clean build`
+4. Open the `ServicesApplication.java` file and run it
+5. Navigate to the frontend directory and run `npm install` and `npm run dev`
+6. Open `http://localhost:3000` in your browser
+
 ## Project Summary
 Our project models a cloud service provider, offering customers the ability to create and manage projects. Users can utilize various services, create and manage instances, configure security settings for them and also compute the total costs associated with their cloud service usage.
 
