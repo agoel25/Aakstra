@@ -34,7 +34,7 @@ const CreateInstanceModal = ({ isOpen, onClose, handleCreateInstance }) => {
           <option key={instance.type} value={instance.type}>
             {`${
               instance.type.charAt(0).toUpperCase() + instance.type.slice(1)
-            } - ${instance.cost}`}
+            }`}
           </option>
         ))}
       </select>

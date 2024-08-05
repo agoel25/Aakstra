@@ -39,31 +39,28 @@ const ProjectContent = ({ projectID }) => {
   }, [projectID, getServicesByProjectID, getInstancesByServiceID]);
 
   const handleCreateInstance = async (instance) => {
-
     const randomCost = Math.floor(Math.random() * (201 - 100)) + 100;
 
     const newInstance = {
       serverID: "101",
       name: selectedService.name,
-      projectID:  projectID,
+      projectID: projectID,
       type: instance.type,
       totalCost: randomCost,
       status: 'running',
       launchDate: '2024-04-04',
       stopDate: '2024-05-05',
     };
-    
-  
+
     try {
       await addInstance({ ...newInstance });
-  
+
       const updatedInstances = await getInstancesByServiceID(projectID, selectedService.name);
-      setProjectInstances(updatedInstances);
+      setProjectInstances([...projectInstances, ...updatedInstances]);
     } catch (error) {
       console.error("Failed to create instance:", error);
     }
   };
-  
 
   const handleAddService = async (service) => {
     if (service && !projectServices.find((s) => s.name === service)) {
@@ -77,7 +74,6 @@ const ProjectContent = ({ projectID }) => {
       }
     }
   };
-
 
   if (!project) {
     return <p>Loading...</p>;
@@ -116,31 +112,30 @@ const ProjectContent = ({ projectID }) => {
                     </button>
                   </div>
                 </div>
-                {true &&
-                  projectInstances.filter((i) => i.serviceID === service.id).length > 0 && (
-                    <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-                      <thead>
-                        <tr>
-                          <th className="py-2 px-4 border-b">Type</th>
-                          <th className="py-2 px-4 border-b">Cost</th>
-                          <th className="py-2 px-4 border-b">Launch Date</th>
-                          <th className="py-2 px-4 border-b">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {projectInstances
-                          .filter((i) => i.serviceID === service.id)
-                          .map((instance, i) => (
-                            <tr key={i}>
-                              <td className="py-2 px-4 border-b">{instance?.type}</td>
-                              <td className="py-2 px-4 border-b">{instance?.totalCost}</td>
-                              <td className="py-2 px-4 border-b">{instance?.launchDate}</td>
-                              <td className="py-2 px-4 border-b">{instance?.status}</td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  )}
+                {projectInstances.filter((i) => i.name === service.name).length > 0 && (
+                  <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4 border-b">Type</th>
+                        <th className="py-2 px-4 border-b">Cost</th>
+                        <th className="py-2 px-4 border-b">Launch Date</th>
+                        <th className="py-2 px-4 border-b">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projectInstances
+                        .filter((i) => i.name === service.name)
+                        .map((instance, i) => (
+                          <tr key={i}>
+                            <td className="py-2 px-4 border-b">{instance?.type}</td>
+                            <td className="py-2 px-4 border-b">{instance?.totalCost}</td>
+                            <td className="py-2 px-4 border-b">{instance?.launchDate}</td>
+                            <td className="py-2 px-4 border-b">{instance?.status}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                )}
               </li>
             ))}
           </ul>
