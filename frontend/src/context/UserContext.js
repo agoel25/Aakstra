@@ -234,7 +234,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const projection = async (attributes, relation, numAttributes) => {
-    const params = sanitizeSQL({ attributes, relation, numAttributes });
+    const params = { attributes, relation, numAttributes };
     try {
       const response = await axios.get("http://localhost:8080/api/projection", { params });
       return response.data;
@@ -245,7 +245,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const selection = async (table, whereClause) => {
-    const params = sanitizeSQL({ whereQuery: whereClause });
+    const params = { whereQuery: whereClause };
     try {
       const response = await axios.get("http://localhost:8080/api/selection", { params });
       return response.data;
