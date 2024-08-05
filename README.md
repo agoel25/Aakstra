@@ -1,7 +1,7 @@
 # AAK Cloud Services
 
 ## Milestone 4/5 Deliverables:
-1. [PDF document with cover page](./docs/milestone_4.pdf)
+1. [PDF document with cover page (initialize.sql)](./docs/milestone_4.pdf)
 2. [SQL initialization script](./backend/services/src/main/java/com/cloud/services/database)
 
 #### Additional setup required to run the application:
