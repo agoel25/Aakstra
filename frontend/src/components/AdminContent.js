@@ -1,44 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from "@/context/UserContext";
 
-const tables = {
-  Customer: ['Email', 'Name', 'PhoneNumber', 'Password', 'Address'],
-  Project: ['ProjectID', 'Name', 'Description', 'CreationDate', 'Status', 'PartnerEmail'],
-  PartOf: ['Email', 'ProjectID'],
-  AddressInfo: ['PostalCode', 'City', 'Country'],
-  BillingInfo: ['CardNumber', 'PaymentType'],
-  PaymentInfo: ['CardNumber', 'Email', 'CVV', 'PostalCode', 'ExpiryDate', 'IsDefault'],
-  ServiceType: ['Type', 'CostType'],
-  ServiceDetails: ['Name', 'Type', 'Description', 'Status', 'CostPerUnit'],
-  CustomerUsesService: ['Email', 'Name'],
-  ProjectUsesService: ['ProjectID', 'Name'],
-  Storage: ['Name', 'Capacity', 'Latency'],
-  Compute: ['Name', 'CPUCores', 'MaxMemory'],
-  Functional: ['Name', 'Timeout', 'ConcurrencyLimit'],
-  Region: ['Name', 'Location', 'Capacity', 'Status'],
-  AvailableIn: ['ServiceName', 'RegionName'],
-  ProjectSecurity: ['ProjectID', 'SecurityGroupID'],
-  SecurityProtocol: ['InboundProtocol', 'OutboundProtocol'],
-  SecurityInfo: ['ProjectID', 'Name', 'InboundProtocol', 'CreationDate'],
-  ServerTypeInfo: ['ServerType', 'Memory', 'Storage', 'OS', 'CPUCores'],
-  ServerInfo: ['ServerID', 'Name', 'ServerType', 'Status', 'Uptime', 'CreatedAt', 'UpdatedAt'],
-  Instance: ['InstanceID', 'Name', 'ServerID', 'ProjectID', 'Type', 'TotalCost', 'Status', 'LaunchDate', 'StopDate'],
-  Bills: ['InstanceID', 'Email', 'CardNumber', 'Cost']
-};
-
 const AdminContent = () => {
+  const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState('');
   const [availableAttributes, setAvailableAttributes] = useState([]);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [projectionResult, setProjectionResult] = useState([]);
-  const { projection } = useUser();
+  const { getTableNames, getAttributeNames, projection } = useUser();
 
-  const handleTableChange = (event) => {
+  useEffect(() => {
+    const fetchTableNames = async () => {
+      try {
+        const tableNames = await getTableNames();
+        setTables(tableNames);
+      } catch (error) {
+        console.error("Error fetching table names:", error);
+      }
+    };
+
+    fetchTableNames();
+  }, [getTableNames]);
+
+  const handleTableChange = async (event) => {
     const table = event.target.value;
     setSelectedTable(table);
-    setAvailableAttributes(tables[table]);
     setSelectedAttributes([]);
     setProjectionResult([]);
+
+    if (table) {
+      try {
+        const attributes = await getAttributeNames(table);
+        setAvailableAttributes(attributes);
+      } catch (error) {
+        console.error("Error fetching attribute names:", error);
+      }
+    } else {
+      setAvailableAttributes([]);
+    }
   };
 
   const handleAttributeSelect = (event) => {
@@ -71,7 +70,7 @@ const AdminContent = () => {
         <label className="block text-gray-700 text-sm font-bold mb-2">Select Table:</label>
         <select value={selectedTable} onChange={handleTableChange} className=" border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
           <option value="">Select a table</option>
-          {Object.keys(tables).map(table => (
+          {tables.map(table => (
             <option key={table} value={table}>{table}</option>
           ))}
         </select>

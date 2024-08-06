@@ -141,6 +141,8 @@ export const UserProvider = ({ children }) => {
         null,
         { params }
       );
+
+      alert("Project Created Successfully");
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -266,6 +268,7 @@ export const UserProvider = ({ children }) => {
         null,
         { params }
       );
+      alert("Project Updated Successfully");
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -361,6 +364,30 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getTableNames = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/getTableNames");
+      return response.data;
+    } catch (error) {
+      alert(error.response.data);
+      throw new Error(error.response.data);
+    }
+  };
+
+  const getAttributeNames = async (relation) => {
+    const params = sanitizeSQL({ relation });
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/getAttributeNames",
+        { params }
+      );
+      return response.data;
+    } catch (error) {
+      alert(error.response.data);
+      throw new Error(error.response.data);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -387,6 +414,8 @@ export const UserProvider = ({ children }) => {
         deleteProject,
         division,
         getNestedInstanceTypeCost,
+        getTableNames,
+        getAttributeNames,
       }}
     >
       {children}
