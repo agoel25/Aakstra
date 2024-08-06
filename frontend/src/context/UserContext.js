@@ -370,7 +370,7 @@ export const UserProvider = ({ children }) => {
       return response.data;
     } catch (error) {
       alert(error.response.data);
-      throw new Error(error.response.data);
+      throw new Error(error.response);
     }
   };
 
@@ -383,8 +383,8 @@ export const UserProvider = ({ children }) => {
       );
       return response.data;
     } catch (error) {
-      alert(error.response.data);
-      throw new Error(error.response.data);
+      alert(error.response);
+      throw new Error(error.response);
     }
   };
 
