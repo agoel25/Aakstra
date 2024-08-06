@@ -287,4 +287,26 @@ public class MainService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/getTableNames")
+    public ResponseEntity<List<String>> getTableNames() {
+        try {
+            List<String> result = databaseConnectionHandler.getTableNames();
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getAttributeNames")
+    public ResponseEntity<List<String>> getAttributeNames(@RequestParam String relation) {
+        try {
+            List<String> result = databaseConnectionHandler.getAttributeNames(relation);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
