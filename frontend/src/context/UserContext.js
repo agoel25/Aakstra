@@ -334,7 +334,7 @@ export const UserProvider = ({ children }) => {
     const params = sanitizeSQL({ projectID });
     try {
       await axios.delete(`http://localhost:8080/api/deleteProject`, { params });
-      alert("Project deleted successfully")
+      alert("Project deleted successfully");
     } catch (error) {
       alert(error.response.data);
       throw new Error(error.response.data);
@@ -366,7 +366,9 @@ export const UserProvider = ({ children }) => {
 
   const getTableNames = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/getTableNames");
+      const response = await axios.get(
+        "http://localhost:8080/api/getTableNames"
+      );
       return response.data;
     } catch (error) {
       alert(error.response.data);
@@ -375,11 +377,10 @@ export const UserProvider = ({ children }) => {
   };
 
   const getAttributeNames = async (relation) => {
-    const params = relation;
     try {
       const response = await axios.get(
         "http://localhost:8080/api/getAttributeNames",
-        { params }
+        { params: { relation } }
       );
       return response.data;
     } catch (error) {
