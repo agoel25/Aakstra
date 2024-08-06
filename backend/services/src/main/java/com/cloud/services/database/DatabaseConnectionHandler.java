@@ -672,6 +672,44 @@ public class DatabaseConnectionHandler {
         return projectNames;
     }
 
+    // Adapted from Tutorial 2 CPSC 304 (cited url at top of file)
+    public List<String> getTableNames() throws SQLException {
+        String query = "SELECT table_name FROM user_tables";
+
+        List<String> tableNames = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String tableName = rs.getString("TABLE_NAME");
+                tableNames.add(tableName);
+            }
+            logger.info("Got all table names {}", tableNames);
+        }
+        return tableNames;
+    }
+
+    // Adapted from https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
+    public List<String> getAttributeNames(String relation) throws SQLException {
+        String query = "SELECT * FROM " + relation;
+
+        List<String> attributeNames = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numColumns = metaData.getColumnCount();
+
+            for (int index = 1; index <= numColumns; index++) {
+                String attributeName = metaData.getColumnName(index);
+                attributeNames.add(attributeName);
+            }
+            logger.info("Got all attribute names {}", attributeNames);
+        }
+        return attributeNames;
+    }
+
     public void insertAllData() {
         try {
             Customer john = new Customer("john.doe@dummy.com", "John Doe","1234567890", "password", "9090 main st, vancouver");
