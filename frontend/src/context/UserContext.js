@@ -378,7 +378,7 @@ export const UserProvider = ({ children }) => {
     const params = relation;
     try {
       const response = await axios.get(
-        "http://localhost:8080/apigetAttributeNames",
+        "http://localhost:8080/api/getAttributeNames",
         { params }
       );
       return response.data;
